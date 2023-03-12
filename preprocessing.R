@@ -345,7 +345,7 @@ transportation <- transportation %>%
 
 unique.company.transportation <- transportation[c("permno")]
 dups <- duplicated(unique.company.transportation) # exclude comnam bcs this changes over time for some companies
-unique.company.transportation <- unique.company.transportation[!dups,]
+unique.company.transportation <- unique.company.transportation[!dups,] 
 
 
 
