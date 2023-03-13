@@ -18,11 +18,18 @@ library(lubridate)
   df1 <- df1[,c(1:25)] # Delete columns of last three parts in first dataset
   df2 <- df2[,-c(1:8,10:25)] # Delete all columns expect those of last three parts in second dataset
   
-# Merge both data sets ------------------------------------------------------
+############################################################################
+########################## MERGE DATA #######################################
+############################################################################
   # Create merged df, using response id
   df <- merge(df1, df2, by = "ResponseId")
   # Remove df1 and df2
   remove(df1, df2)
+  
+############################################################################
+########################## Data Cleaning ###################################
+############################################################################
+# Feature selection functions ----------------------------------------------
   # Bring variable names tolower and change character types
   df<- df %>% 
     rename_with(tolower) %>% 
@@ -54,21 +61,13 @@ library(lubridate)
       sc0 = as.numeric(sc0), sc1 = as.numeric(sc1), sc2 = as.numeric(sc2)
     )
 
+  # Remove useless columns
+  
 
 
-# Remove useless columns
-
-
-# Convert character columns to numeric variables
-class(df$sc1)
-df <- df %>% 
-  mutate(
-    sc1 = as.numeric(df$sc1)
-  )
-
-
-
-
+############################################################################
+########################## ADAPT DATA #######################################
+############################################################################
 #bin product culture scores
 score_groups = cut(df$SC1, breaks = c(70,82,94,106,118,130,142,154,166,178,190,202,214,226), 
                    labels = c("bin1", "bin2", "bin3", "bin4", "bin5", "bin6", "bin7", "bin8", "bin9", "bin10", "bin11", "bin12", "bin13"))
