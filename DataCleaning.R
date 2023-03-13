@@ -9,3 +9,26 @@ library(readr)
 # dataset
 DataSet <- read_csv("DataSet.csv")
 View(DataSet)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
