@@ -85,19 +85,30 @@ setwd("~/Thesis")
   remove(excluded.variables)
   
   # Remove NA's ----------------------------------------------------------
+  
+  remove_all_NA_rows <- function(df) {
+    #' @description Function that removes any row with NA's
+    #'
+    #' @param df    Passing a data frame
+    #' @return      Data frame NA filtered rows
+    
+    return(df %>% filter(rowSums(is.na(df[,9:71])) < 1 ))
+  }
+  
   remove_NA_rows <- function(df) {
     #' @description Function that removes any rows with 10 or more NA's
     #'
     #' @param df    Passing a data frame
     #' @return      Data frame NA filtered rows
     
-    return(df %>% filter(rowSums(is.na(.)) < 15))
+    return(df %>% filter(rowSums(is.na(df[,9:71])) < 10 ))
   }
-  
+
   # Apply filters to df
   df <- df %>% remove_NA_rows()
+  df.all <- df %>% remove_all_NA_rows()
   # Remove function
-  remove(remove_NA_rows)
+  remove(remove_NA_rows, remove_all_NA_rows)
 
 ############################################################################
 ########################## ADAPT DATA #######################################
