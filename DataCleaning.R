@@ -106,8 +106,8 @@ setwd("~/Thesis")
   }
 
   # Apply filters to df
-  df <- df %>% remove_NA_rows()
-  df.all <- df %>% remove_all_NA_rows()
+  # df <- df %>% remove_NA_rows() --> discuss if we want more data containing NA's or not
+  df <- df %>% remove_all_NA_rows()
   # Remove function
   remove(remove_NA_rows, remove_all_NA_rows)
   
@@ -138,7 +138,6 @@ setwd("~/Thesis")
     names(df)[names(df) == "q3.5"] <- "it"
       
     
-  
   
 ## things to think about  
     # if we use data were we allow some NA's, how do we handle them --> average? per section?
