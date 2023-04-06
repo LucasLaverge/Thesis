@@ -60,7 +60,7 @@ setwd("~/Thesis")
     mutate(
       sc0 = as.numeric(sc0), sc1 = as.numeric(sc1), sc2 = as.numeric(sc2)
     )
-
+  
   # Irrelevant features ----------------------------------------------------------
   # Variables that cannot be included 
   excluded.variables <- c("startdate", 
@@ -79,7 +79,8 @@ setwd("~/Thesis")
                           "q2.1",
                           "responseid", 
                           "finished", 
-                          "distributionchannel")
+                          "distributionchannel",
+                          "progress")
   df <- df %>% 
     dplyr::select(-excluded.variables)
   remove(excluded.variables)
@@ -92,7 +93,7 @@ setwd("~/Thesis")
     #' @param df    Passing a data frame
     #' @return      Data frame NA filtered rows
     
-    return(df %>% filter(rowSums(is.na(df[,9:71])) < 1 ))
+    return(df %>% filter(rowSums(is.na(df[,8:70])) < 1 ))
   }
   
   remove_NA_rows <- function(df) {
@@ -101,7 +102,7 @@ setwd("~/Thesis")
     #' @param df    Passing a data frame
     #' @return      Data frame NA filtered rows
     
-    return(df %>% filter(rowSums(is.na(df[,9:71])) < 10 ))
+    return(df %>% filter(rowSums(is.na(df[,8:70])) < 10 ))
   }
 
   # Apply filters to df
@@ -109,6 +110,15 @@ setwd("~/Thesis")
   df.all <- df %>% remove_all_NA_rows()
   # Remove function
   remove(remove_NA_rows, remove_all_NA_rows)
+  
+  # Fill in others with corresponding answer ----------------------------------------------------------
+  # Replace the 'other' wiht the corresponding answer in the column next to it
+  df$q3.1[df$q3.1 == "Other"] <- df$q3.1_7_text[df$q3.1 == "Other"]
+  
+  
+  
+  
+  
   
 ## things to think about  
     # if we use data were we allow some NA's, how do we handle them --> average? per section?
