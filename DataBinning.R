@@ -15,14 +15,6 @@ df$product.score = df$execution.score + df$innovation.score # product culture sc
 df$agile.score = rowSums(df[, paste0("q6.", 2:13)]) #agile score calculation
 
 
-
-
-
-rowSums(df[, paste0("q5.", 2:28)])[2:13]
-
-
-df[, c("q6.2", "q6.3", "q6.4", "q6.5", "q6.6", "q6.7", "q6.8", "q6.9", "q6.10", "q6.11", "q6.12", "q6.13")]
-
 plot(df$innovation.score, df$execution.score)
 # Create the plot
 ggplot(df, aes(innovation.score, execution.score)) +
