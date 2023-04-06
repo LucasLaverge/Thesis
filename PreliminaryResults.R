@@ -1,4 +1,9 @@
 # packages
+library(dplyr)
+library(tidyr)
+library(broom)
+library(psych)
+library(GPArotation)
 
 # General visualizations -----------------------------------------------------------
 
@@ -52,12 +57,35 @@ model4 <- lm(agile.score ~ execution.score, data = df)
 summary(model4)
 
 
+# Anova analysis of scores -----------------------------------------------------------
+# bin the variable agile scores into 12 groups
+df$agile.binned <- cut(df$agile.score, breaks = 12)
 
 
 
+# summarize data by group
+summary.df <- df %>%
+  group_by(agile.binned) %>%
+  summarize(
+    n = n(),
+    mean_score = mean(agile.score),
+    conf_interval = confint_tidy(lm(agile.score ~ 1), .alpha = 0.05)$conf.low %>% paste0(",", confint_tidy(lm(agile.score ~ 1), .alpha = 0.05)$conf.high)
+  )
+
+# print summary table
+print(summary.df)
 
 
 
+# Exploratory Factor Analysis of Execution culture -------------------------------------------------
+# select the variables for EFA
+vars <- df[, paste0("q5.", 2:28)]
+
+# perform EFA with 2 factors
+efa.result <- fa(vars, nfactors = 6)
+
+# view the EFA results
+print(efa.result, sort=TRUE)
 
 
 
