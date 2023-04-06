@@ -10,7 +10,7 @@ df$agile.score = rowSums(df[, paste0("q6.", 2:13)]) #agile score calculation
 
 # Bin scores --------------------------------------------------------------------
 #bin product culture scores
-df$score.bin = cut(df$sc1, breaks = c(-Inf,82,94,106,118,130,142,154,166,178,190,202,214,+Inf), 
+df$score.bin = cut(df$product.score, breaks = c(-Inf,82,94,106,118,130,142,154,166,178,190,202,214,+Inf), 
                    labels = c("bin1", "bin2", "bin3", "bin4", "bin5", "bin6", "bin7", "bin8", "bin9", "bin10", "bin11", "bin12", "bin13"))
 
 
