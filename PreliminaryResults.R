@@ -1,13 +1,18 @@
-
-
-
-
-# Example data
-x <- c(1, 2, 3, 4, 5)
-y <- c(1, 3, 2, 4, 5)
+# packages
 
 # Plot the data
-plot(product.score, y, type = "l", lwd = 2, col = "blue", xlab = "X-axis label", ylab = "Y-axis label", main = "Title of the chart")
+
+# histogram of frequency and product culture scores
+hist(df$product.score, breaks = 10, xlab = "ProductCulture", 
+                                    ylab = "Frequency", 
+                                    main = "Histogrem of Product Culture Scores",
+                                    col = "lightblue")
+
+# histogram of frequency and agile practices
+hist(df$agile.score, breaks = 10, xlab = "AgilePractices", 
+     ylab = "Frequency", 
+     main = "Histogrem of Agile Practices",
+     col = "lightblue")
 
 
 
