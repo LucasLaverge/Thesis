@@ -2,7 +2,7 @@
 library(readr)
 library(tidyverse)
 library(lubridate)
-library(grepl)
+
 
 setwd("~/Thesis")
 ############################################################################
@@ -62,7 +62,7 @@ setwd("~/Thesis")
       sc0 = as.numeric(sc0), sc1 = as.numeric(sc1), sc2 = as.numeric(sc2)
     )
   
-  # Irrelevant features ----------------------------------------------------------
+# Irrelevant features ----------------------------------------------------------
   # Variables that cannot be included 
   excluded.variables <- c("startdate", 
                           "enddate", 
@@ -86,8 +86,7 @@ setwd("~/Thesis")
     dplyr::select(-excluded.variables)
   remove(excluded.variables)
   
-  # Remove NA's ----------------------------------------------------------
-  
+# Remove NA's ----------------------------------------------------------
   remove_all_NA_rows <- function(df) {
     #' @description Function that removes any row with NA's
     #'
@@ -112,7 +111,7 @@ setwd("~/Thesis")
   # Remove function
   remove(remove_NA_rows, remove_all_NA_rows)
   
-  # Fill in the 'Other" with corresponding text answers ----------------------------------------------------------
+# Fill in the 'Other" with corresponding text answers ----------------------------------------------------------
   # Industries
   df$q3.1[df$q3.1 == "Other"] <- df$q3.1_7_text[df$q3.1 == "Other"]
   #Regions
@@ -120,13 +119,25 @@ setwd("~/Thesis")
     # Extra remove row containing USA and replace Leuven with flemish brabant
     df <- df[!grepl("(?i)^.*usa.*$", df$q3.2), ] #remove usa row
     df$q3.2[df$q3.2 == "Leuven"] <- "Flemish-Brabant" # Change Leuven to it's correct region
+    #Remove text variables 
+    excluded.variables <- c("q3.1_7_text", "q3.2_7_text")
+    df <- df %>% 
+      dplyr::select(-excluded.variables)
+    remove(excluded.variables) 
     
-  
-  
-  
-  
-  
-  
+# Give meaningful columnnames ----------------------------------------------------------
+    # Industry
+    names(df)[names(df) == "q3.1"] <- "industry"
+    # Region
+    names(df)[names(df) == "q3.2"] <- "region"
+    # size
+    names(df)[names(df) == "q3.3"] <- "size"
+    # function
+    names(df)[names(df) == "q3.4"] <- "function"
+    # IT sector or not
+    names(df)[names(df) == "q3.5"] <- "it"
+      
+    
   
   
 ## things to think about  
