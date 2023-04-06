@@ -137,7 +137,6 @@ setwd("~/Thesis")
     # IT sector or not
     names(df)[names(df) == "q3.5"] <- "it"
     
-    
 # Reverse scores of questions with a negative connotation ----------------------------------------------------------
     df$q4.5 <- 6 - df$q4.5
     df$q4.10 <- 6 - df$q4.10
@@ -151,6 +150,13 @@ setwd("~/Thesis")
 # Modify the wrong 5point likert scale to a 7 point likert scale  (q6.6) ---------------------------------------------
     df$q6.6  <- as.integer((df$q6.6 - 1) * 6 / 4 + 1)
     df$q6.6 <- as.numeric(df$q6.6) # change back to numeric
+
+# Remove scores calculated by Qualtrics (wrong scores)--------------------------------------------- 
+    #Remove text variables 
+    excluded.variables <- c("sc0", "sc1", "sc2")
+    df <- df %>% 
+      dplyr::select(-excluded.variables)
+    remove(excluded.variables)   
     
   
 ## things to think about  
