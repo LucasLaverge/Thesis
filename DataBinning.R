@@ -1,5 +1,9 @@
+#packages
+library(ggplot2)
+
+
 ############################################################################
-########################## ADAPT DATA #######################################
+########################## BIN DATA #######################################
 ############################################################################
 #bin product culture scores
 df$score.bin = cut(df$sc1, breaks = c(-Inf,82,94,106,118,130,142,154,166,178,190,202,214,+Inf), 
@@ -13,8 +17,7 @@ df$product.culture.score = rowSums(df[,c("q5.2","q5.3","q5.4","q5.5","q5.6","q5.
                                          "q5.21","q5.22","q5.23","q5.24","q5.25","q5.26","q5.27","q5.28")])
 
 
-# Load the ggplot2 package
-library(ggplot2)
+
 
 plot(df$innovation.culture.score, df$product.culture.score)
 # Create the plot
@@ -22,3 +25,10 @@ ggplot(df, aes(innovation.culture.score, product.culture.score)) +
   geom_point() + # Add points
   scale_x_continuous(limits = c(0, 120)) + # Set the x-axis limits
   scale_y_continuous(limits = c(0, 120)) # Set the y-axis limits
+
+
+
+
+
+
+

@@ -110,7 +110,10 @@ setwd("~/Thesis")
   # Remove function
   remove(remove_NA_rows, remove_all_NA_rows)
   
-  
+## things to think about  
+    # if we use data were we allow some NA's, how do we handle them --> average? per section?
+                                                                  # --> fill in NA with overall average
+    # easier if we only use data with zero NA's
 
 
 
