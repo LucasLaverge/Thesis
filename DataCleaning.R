@@ -136,7 +136,21 @@ setwd("~/Thesis")
     names(df)[names(df) == "q3.4"] <- "function"
     # IT sector or not
     names(df)[names(df) == "q3.5"] <- "it"
-      
+    
+    
+# Reverse scores of questions with a negative connotation ----------------------------------------------------------
+    df$q4.5 <- 6 - df$q4.5
+    df$q4.10 <- 6 - df$q4.10
+    df$q4.17 <- 6 - df$q4.17
+    df$q4.21 <- 6 - df$q4.21
+    df$q5.4 <- 6 - df$q5.4
+    df$q5.8 <- 6 - df$q5.8
+    df$q5.10 <- 6 - df$q5.10
+    df$q5.16 <- 6 - df$q5.16
+    
+# Modify the wrong 5point likert scale to a 7 point likert scale  (q6.6) ---------------------------------------------
+    df$q6.6  <- as.integer((df$q6.6 - 1) * 6 / 4 + 1)
+    df$q6.6 <- as.numeric(df$q6.6) # change back to numeric
     
   
 ## things to think about  
