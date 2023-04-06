@@ -2,6 +2,7 @@
 library(readr)
 library(tidyverse)
 library(lubridate)
+library(grepl)
 
 setwd("~/Thesis")
 ############################################################################
@@ -111,9 +112,17 @@ setwd("~/Thesis")
   # Remove function
   remove(remove_NA_rows, remove_all_NA_rows)
   
-  # Fill in others with corresponding answer ----------------------------------------------------------
-  # Replace the 'other' wiht the corresponding answer in the column next to it
+  # Fill in the 'Other" with corresponding text answers ----------------------------------------------------------
+  # Industries
   df$q3.1[df$q3.1 == "Other"] <- df$q3.1_7_text[df$q3.1 == "Other"]
+  #Regions
+  df$q3.2[df$q3.2 == "Other"] <- df$q3.2_7_text[df$q3.2 == "Other"]
+    # Extra remove row containing USA and replace Leuven with flemish brabant
+    df <- df[!grepl("(?i)^.*usa.*$", df$q3.2), ] #remove usa row
+    df$q3.2[df$q3.2 == "Leuven"] <- "Flemish-Brabant" # Change Leuven to it's correct region
+    
+  
+  
   
   
   
