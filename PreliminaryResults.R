@@ -3,16 +3,18 @@
 # Plot the data
 
 # histogram of frequency and product culture scores
-hist(df$product.score, breaks = 10, xlab = "ProductCulture", 
+hist(df$product.score, breaks = 10, xlab = "Product Culture Score", 
                                     ylab = "Frequency", 
-                                    main = "Histogrem of Product Culture Scores",
+                                    main = "Histogram of Product Culture Scores",
                                     col = "lightblue")
 
 # histogram of frequency and agile practices
-hist(df$agile.score, breaks = 10, xlab = "AgilePractices", 
+hist(df$agile.score, breaks = 10, xlab = "Agile Practice Score", 
      ylab = "Frequency", 
-     main = "Histogrem of Agile Practices",
+     main = "Histogram of Agile Practices",
      col = "lightblue")
+
+
 
 
 
