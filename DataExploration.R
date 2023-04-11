@@ -151,7 +151,7 @@ df %>%
     geom_histogram(bins = 10, color = "black", fill = "lightblue") +
     labs(x = "Product Culture Score", y = "Frequency",
          title = "Histogram of Product Culture Scores") +
-    facet_wrap(~ it) # Change this with region, industry, size etc.
+    facet_wrap(~ it + region) # Change this with region, industry, size etc.
   # Assess the plot distribution
   # Summary statistics of distribution
   summary(df$product.score)
@@ -168,7 +168,7 @@ df %>%
     geom_histogram(bins = 10, color = "black", fill = "lightblue") +
     labs(x = "Agile Practices", y = "Frequency",
          title = "Histogram of Agile Practices Scores") +
-    facet_wrap(~ it + industry) # Change this with region, industry, size etc.
+    facet_wrap(~ it ) # Change this with region, industry, size etc.
   # Assess the plot distribution
   # Summary statistics of distribution
   summary(df$agile.score)
@@ -207,6 +207,10 @@ df %>%
   # Execution as predictor
   model4 <- lm(agile.score ~ execution.score, data = df)
   summary(model4)
+  
+  
+######## Remove outliers and look again #############
+  #make two df with and without outliers?
 
 # Anova analysis of scores -----------------------------------------------------------
   # bin the variable agile scores into 12 groups
@@ -229,4 +233,5 @@ df %>%
   df <- df[, !names(df) %in% c("agile.binned")]
   remove(summary.df)
 #-------------------------------------------------------------------------------------------------------------- 
+  
   
