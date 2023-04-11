@@ -13,8 +13,6 @@ library(likert)
 
 # Summary of the dataset
 summary(df)
-
-
 # Count the number of respondents by Industry
 df %>%
   group_by(industry) %>%
@@ -56,13 +54,11 @@ df %>%
   ggplot(aes(x = it, y = count)) +
   geom_bar(stat = "identity") +
   ggtitle("Number of Respondents by IT or Not")
-
+#-------------------------------------------------------------------------------------------------------------- 
 
 # Overview of variables -------------------------------------------------------
   # Look at distribution of answers for each statement
   # Fill in bias (overestimating own capabilities)
-
-
 
 # Agile spread ----
   # Create a data frame with just the answers to the Likert scale questions
@@ -125,6 +121,7 @@ df %>%
   # Create a Likert scale plot
   plot(likert.data.execution, main = "Likert Scale Responses Execution Practices")
 
+#--------------------------------------------------------------------------------------------------------------  
 # Overview of scores -------------------------------------------------------
   # Calculate scores
   df$innovation.score = rowSums(df[, paste0("q4.", 2:22)]) # innovation score calculation
@@ -135,15 +132,59 @@ df %>%
   
 #Product Culture Scores
   # A histogram plot of the total scores and brief analysis of results derived from plot.
+  hist(df$product.score, breaks = 10, xlab = "Product Culture Score", 
+                         ylab = "Frequency", 
+                         main = "Histogram of Product Culture Scores",
+                         col = "lightblue")
   # Look at histograms when we adjust for random effects (IT main business?, location, size…)
+  ggplot(df, aes(x = product.score)) +
+    geom_histogram(bins = 10, color = "black", fill = "lightblue") +
+    labs(x = "Product Culture Score", y = "Frequency",
+         title = "Histogram of Product Culture Scores") +
+    facet_wrap(~ it) # Change this with region, industry, size etc.
   # Assess the plot distribution
+  # Summary statistics of distribution
+  summary(df$product.score)
+  sd(df$product.score)
 
+# Agile Practices Score
+  # A histogram plot of the total agile practices and brief analysis of results derived from plot.
+  hist(df$agile.score, breaks = 10, xlab = "Agile Practice Score", 
+       ylab = "Frequency", 
+       main = "Histogram of Agile Practices",
+       col = "lightblue")
+  # Look at histograms when we adjust for random effects (IT main business?, location, size…)
+  ggplot(df, aes(x = agile.score)) +
+    geom_histogram(bins = 10, color = "black", fill = "lightblue") +
+    labs(x = "Agile Practices", y = "Frequency",
+         title = "Histogram of Agile Practices Scores") +
+    facet_wrap(~ it + industry) # Change this with region, industry, size etc.
+  # Assess the plot distribution
+  # Summary statistics of distribution
+  summary(df$agile.score)
+  sd(df$agile.score)
+  
 
 # Scatterplot Product Culture and Agile Practices
   # Look at distribution and assess whether we have a trend/correlation
-  # Try to improve correlation with transformations
+  # Creation of linear regression 
+  model1 <- lm(agile.score ~ product.score, data = df)
+  summary(model1) # Summary
+  cor(df$product.score, df$agile.score) # Correlation
   
+  # Scatter plot of product culture scores and agile practices scores
+  plot(df$product.score, df$agile.score, col = "darkblue")
+  # Plot the regression line
+  abline(model1, col = "darkred")
+  # plot the regression formula
+  formula <- substitute(paste("y = ", a + b * x), 
+                        list(a = format(coef(model1)[1], digits = 2), 
+                             b = format(coef(model1)[2], digits = 2)))
+  xrange <- range(df$product.score) 
+  ypos <- predict(model1, newdata = data.frame(product.score = mean(xrange)))
+  text(mean(xrange), ypos, formula, pos = 2)
 
-
-
-
+  # Try to improve correlation with transformations
+  #TO DO
+  
+#-------------------------------------------------------------------------------------------------------------- 
