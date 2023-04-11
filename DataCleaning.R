@@ -133,7 +133,7 @@ setwd("~/Thesis")
     # size
     names(df)[names(df) == "q3.3"] <- "size"
     # function
-    names(df)[names(df) == "q3.4"] <- "function"
+    names(df)[names(df) == "q3.4"] <- "job.title"
     # IT sector or not
     names(df)[names(df) == "q3.5"] <- "it"
     
