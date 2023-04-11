@@ -185,7 +185,7 @@ replace_NA_with_avg <- function(df, target_cols, other_cols) {
   agile.replace <-  paste0("q6.", (2:13))
   df <- replace_NA_with_avg(df, agile.replace, agile.replace)
   # Innovation
-  innovation.replace <- paste0("q4.", (2:22))
+  innovation.replace <- paste0("q4.", (2:22)) 
   df <- replace_NA_with_avg(df, innovation.replace, innovation.replace)
   # Execution
   execution.replace <- paste0("q5.", (2:28))
