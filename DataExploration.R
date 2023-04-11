@@ -184,7 +184,32 @@ df %>%
   ypos <- predict(model1, newdata = data.frame(product.score = mean(xrange)))
   text(mean(xrange), ypos, formula, pos = 2)
 
-  # Try to improve correlation with transformations
-  #TO DO
+# Try to improve correlation with transformations
+  # Other linear regression
+  # In this linear regression we will use both innovation score and execution score as individual predictors
+  # Innovation and execution as predictors
+  model2 <- lm(agile.score ~ innovation.score + execution.score, data = df)
+  summary(model2)
+  # Innovation as predictor
+  model3 <- lm(agile.score ~ innovation.score, data = df)
+  summary(model3)
+  # Execution as predictor
+  model4 <- lm(agile.score ~ execution.score, data = df)
+  summary(model4)
+
+# Anova analysis of scores -----------------------------------------------------------
+  # bin the variable agile scores into 12 groups
+  df$agile.binned <- cut(df$agile.score, breaks = 12)
   
+  # summarize data by group
+  summary.df <- df %>%
+    group_by(agile.binned) %>%
+    summarize(
+      n = n(),
+      mean_score = mean(agile.score),
+      conf_interval = confint_tidy(lm(agile.score ~ 1), .alpha = 0.05)$conf.low %>% paste0(",", confint_tidy(lm(agile.score ~ 1), .alpha = 0.05)$conf.high)
+    )
+  
+  # print summary table
+  print(summary.df)
 #-------------------------------------------------------------------------------------------------------------- 
