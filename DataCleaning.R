@@ -1,10 +1,53 @@
+#setwd
+setwd("~/Thesis")
+
 #packages
 library(readr)
 library(tidyverse)
 library(lubridate)
 
+#Functions
+remove_all_NA_rows <- function(df) {
+  #' @description Function that removes any row with NA's
+  #'
+  #' @param df    Passing a data frame
+  #' @return      Data frame NA filtered rows
+  
+  return(df %>% filter(rowSums(is.na(df[,6:65])) < 1 ))
+}
 
-setwd("~/Thesis")
+remove_NA_rows <- function(df) {
+  #' @description Function that removes any rows with 10 or more NA's
+  #'
+  #' @param df    Passing a data frame
+  #' @return      Data frame NA filtered rows
+  
+  return(df %>% filter(rowSums(is.na(df[,8:70])) < 10 ))
+}
+
+replace_NA_with_avg <- function(df, target_cols, other_cols) {
+  #' Replace NA values with the rounded average of other columns for a range of columns
+  #' 
+  #' This function takes a data frame and replaces any NA values in specified columns
+  #' with the rounded average of other specified columns.
+  #'
+  #' @param df          A data frame
+  #' @param target_cols A character vector specifying the names of the columns to replace NA values in
+  #' @param other_cols  A character vector specifying the names of the columns to use for calculating the average
+  #' @return            A modified data frame with NA values in the target columns replaced by the rounded average of other columns
+  for (target_col in target_cols) {
+    df[target_col] <- apply(df, 1, function(row) {
+      other_values <- row[other_cols]
+      other_values_numeric <- as.numeric(other_values[!is.na(other_values)])
+      ifelse(is.na(row[target_col]),
+             round(mean(other_values_numeric)),
+             row[target_col])
+    })
+  }
+  return(df)
+}
+
+
 ############################################################################
 ########################## LOAD DATA #######################################
 ############################################################################
@@ -87,29 +130,7 @@ setwd("~/Thesis")
   remove(excluded.variables)
   
 # Remove NA's ----------------------------------------------------------
-  remove_all_NA_rows <- function(df) {
-    #' @description Function that removes any row with NA's
-    #'
-    #' @param df    Passing a data frame
-    #' @return      Data frame NA filtered rows
-    
-    return(df %>% filter(rowSums(is.na(df[,8:70])) < 1 ))
-  }
-  
-  remove_NA_rows <- function(df) {
-    #' @description Function that removes any rows with 10 or more NA's
-    #'
-    #' @param df    Passing a data frame
-    #' @return      Data frame NA filtered rows
-    
-    return(df %>% filter(rowSums(is.na(df[,8:70])) < 10 ))
-  }
-
-  # Apply filters to df
-  # df <- df %>% remove_NA_rows() --> discuss if we want more data containing NA's or not
-  df <- df %>% remove_all_NA_rows()
-  # Remove function
-  remove(remove_NA_rows, remove_all_NA_rows)
+  df <- df %>% remove_NA_rows()
   
 # Fill in the 'Other" with corresponding text answers ----------------------------------------------------------
   # Industries
@@ -157,24 +178,26 @@ setwd("~/Thesis")
     df <- df %>% 
       dplyr::select(-excluded.variables)
     remove(excluded.variables)   
-    
+
+# Fill in NA gaps (average per block of statements)
+  # Apply the custom function to each row of the data frame
+  # Agile
+  agile.replace <-  paste0("q6.", (2:13))
+  df <- replace_NA_with_avg(df, agile.replace, agile.replace)
+  # Innovation
+  innovation.replace <- paste0("q4.", (2:22))
+  df <- replace_NA_with_avg(df, innovation.replace, innovation.replace)
+  # Execution
+  execution.replace <- paste0("q5.", (2:28))
+  df <- replace_NA_with_avg(df, execution.replace, execution.replace)
   
-## things to think about  
-    # if we use data were we allow some NA's, how do we handle them --> average? per section?
-                                                                  # --> fill in NA with overall average
-    # easier if we only use data with zero NA's
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  # Use function that removes all rows with NA's in statements (test to see if we still have NA's or not)
+  df <- df %>% remove_all_NA_rows()    
+  
+  # Change back to numeric
+  cols <- c(paste0("q4.", 2:22), paste0("q5.", 2:28), paste0("q6.", 2:13))
+  df <- df %>% mutate(across(all_of(cols), ~as.numeric(.)))
+  
+  # Remove function
+  remove(remove_NA_rows, remove_all_NA_rows, replace_NA_with_avg, agile.replace, innovation.replace, execution.replace, cols)
+  
