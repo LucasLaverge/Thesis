@@ -126,6 +126,13 @@ df %>%
   plot(likert.data.execution, main = "Likert Scale Responses Execution Practices")
 
 # Overview of scores -------------------------------------------------------
+  # Calculate scores
+  df$innovation.score = rowSums(df[, paste0("q4.", 2:22)]) # innovation score calculation
+  df$execution.score = rowSums(df[, paste0("q5.", 2:28)]) # execution score calculation
+  df$product.score = df$execution.score + df$innovation.score # product culture score (sum of innovation and execution)
+  df$agile.score = rowSums(df[, paste0("q6.", 2:13)]) #agile score calculation
+  
+  
 #Product Culture Scores
   # A histogram plot of the total scores and brief analysis of results derived from plot.
   # Look at histograms when we adjust for random effects (IT main business?, location, size…)
@@ -135,6 +142,7 @@ df %>%
 # Scatterplot Product Culture and Agile Practices
   # Look at distribution and assess whether we have a trend/correlation
   # Try to improve correlation with transformations
+  
 
 
 

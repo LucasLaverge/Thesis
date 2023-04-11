@@ -1,13 +1,6 @@
 #packages
 library(ggplot2)
 
-# Calculate scores --------------------------------------------------------------------
-
-df$innovation.score = rowSums(df[, paste0("q4.", 2:22)]) # innovation score calculation
-df$execution.score = rowSums(df[, paste0("q5.", 2:28)]) # execution score calculation
-df$product.score = df$execution.score + df$innovation.score # product culture score (sum of innovation and execution)
-df$agile.score = rowSums(df[, paste0("q6.", 2:13)]) #agile score calculation
-
 # Bin scores --------------------------------------------------------------------
 #bin product culture scores
 df$score.bin = cut(df$product.score, breaks = c(-Inf,82,94,106,118,130,142,154,166,178,190,202,214,+Inf), 
