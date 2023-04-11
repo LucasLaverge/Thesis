@@ -52,7 +52,9 @@ print(efa.result, sort=TRUE)
     ggtitle("K-means Clustering Results") +
     labs(x = "Innovation Score", y = "Execution Score")
 
-
+# Create groups
+  
+  # Plot per group the agile practice scores
 
 
 
