@@ -82,7 +82,9 @@ df %>%
   likert.data.agile <- likert(likert.data.agile)
   # Create a Likert scale plot
   plot(likert.data.agile, main = "Likert Scale Responses Agile Practices")
-
+  # Remove 
+  remove(likert.data.agile, col, col.levels, levels, missing.levels)
+  
   
 # Innovation spread ----
   # Create a data frame with just the answers to the Likert scale questions
@@ -103,6 +105,9 @@ df %>%
   likert.data.innovation <- likert(likert.data.innovation)
   # Create a Likert scale plot
   plot(likert.data.innovation, main = "Likert Scale Responses Innovation Practices")
+  # Remove 
+  remove(likert.data.innovation, col, col.levels, levels, missing.levels)
+  
   
 # Execution spread ----
   # Create a data frame with just the answers to the Likert scale questions
@@ -123,6 +128,8 @@ df %>%
   likert.data.execution <- likert(likert.data.execution)
   # Create a Likert scale plot
   plot(likert.data.execution, main = "Likert Scale Responses Execution Practices")
+  # Remove 
+  remove(likert.data.execution, col, col.levels, levels, missing.levels)
 
 #--------------------------------------------------------------------------------------------------------------  
 # Overview of scores -------------------------------------------------------
@@ -186,6 +193,7 @@ df %>%
   xrange <- range(df$product.score) 
   ypos <- predict(model1, newdata = data.frame(product.score = mean(xrange)))
   text(mean(xrange), ypos, formula, pos = 2)
+  remove(xrange, formula, ypos)
 
 # Try to improve correlation with transformations
   # Other linear regression
@@ -215,4 +223,10 @@ df %>%
   
   # print summary table
   print(summary.df)
+  
+  # Remove
+  # Delete the column named "agile.binned" from the original data frame
+  df <- df[, !names(df) %in% c("agile.binned")]
+  remove(summary.df)
 #-------------------------------------------------------------------------------------------------------------- 
+  
