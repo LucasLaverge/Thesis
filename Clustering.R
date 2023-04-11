@@ -20,16 +20,12 @@ library(GPArotation)
   # Select the variables to use in clustering
   vars <- c("innovation.score", "execution.score")
   dataset <- df[vars]
-  
   # Run k-means clustering with k=3
   kmeans.result <- kmeans(dataset, centers = 4)
-  
   # View the cluster assignments
   kmeans.result$cluster
-  
   # View the centroids
   kmeans.result$centers
-  
   # Create a scatter plot of the clustering results
   ggplot(df, aes(x = innovation.score, y = execution.score, color = factor(kmeans.result$cluster))) +
     geom_point(size = 3) +
@@ -39,6 +35,8 @@ library(GPArotation)
                color = "black", size = 5, shape = 21) +
     ggtitle("K-means Clustering Results") +
     labs(x = "Innovation Score", y = "Execution Score")
+  # Remove
+  remove(vars, dataset, kmeans.result)
 
 # Create groups
   
