@@ -1,6 +1,7 @@
 # Packages
 library(dplyr)
 library(ggplot2)
+library(likert)
 
 
 # Overview of respondents -------------------------------------------------------
@@ -63,7 +64,66 @@ df %>%
 
 
 
+# Agile spread ----
+  # Create a data frame with just the answers to the Likert scale questions
+  likert.data.agile <- df[,c(6:17)]
+  # Create a vector of all 7 levels
+  levels <- c("1", "2", "3", "4", "5", "6", "7")
+  # Convert the data to a factor format with all 7 levels for all columns
+  for (col in 1:ncol(likert.data.agile)) {
+    # Identify the unique response values in each column
+    col.levels <- unique(likert.data.agile[,col])
+    # Add any missing levels to the vector of levels
+    missing.levels <- setdiff(levels, col.levels)
+    levels <- sort(union(levels, missing.levels))
+    # Convert the column to a factor format with all 7 levels
+    likert.data.agile[,col] <- factor(likert.data.agile[,col], levels = levels)
+  }
+  # Convert the data to a likert format
+  likert.data.agile <- likert(likert.data.agile)
+  # Create a Likert scale plot
+  plot(likert.data.agile, main = "Likert Scale Responses Agile Practices")
 
+  
+# Innovation spread ----
+  # Create a data frame with just the answers to the Likert scale questions
+  likert.data.innovation <- df[,18:38]
+  # Create a vector of all 7 levels
+  levels <- c("1", "2", "3", "4", "5")
+  # Convert the data to a factor format with all 7 levels for all columns
+  for (col in 1:ncol(likert.data.innovation)) {
+    # Identify the unique response values in each column
+    col.levels <- unique(likert.data.innovation[,col])
+    # Add any missing levels to the vector of levels
+    missing.levels <- setdiff(levels, col.levels)
+    levels <- sort(union(levels, missing.levels))
+    # Convert the column to a factor format with all 7 levels
+    likert.data.innovation[,col] <- factor(likert.data.innovation[,col], levels = levels)
+  }
+  # Convert the data to a likert format
+  likert.data.innovation <- likert(likert.data.innovation)
+  # Create a Likert scale plot
+  plot(likert.data.innovation, main = "Likert Scale Responses Innovation Practices")
+  
+# Execution spread ----
+  # Create a data frame with just the answers to the Likert scale questions
+  likert.data.execution <- df[,39:65]
+  # Create a vector of all 7 levels
+  levels <- c("1", "2", "3", "4", "5")
+  # Convert the data to a factor format with all 7 levels for all columns
+  for (col in 1:ncol(likert.data.execution)) {
+    # Identify the unique response values in each column
+    col.levels <- unique(likert.data.execution[,col])
+    # Add any missing levels to the vector of levels
+    missing.levels <- setdiff(levels, col.levels)
+    levels <- sort(union(levels, missing.levels))
+    # Convert the column to a factor format with all 7 levels
+    likert.data.execution[,col] <- factor(likert.data.execution[,col], levels = levels)
+  }
+  # Convert the data to a likert format
+  likert.data.execution <- likert(likert.data.execution)
+  # Create a Likert scale plot
+  plot(likert.data.execution, main = "Likert Scale Responses Execution Practices")
 
 # Overview of scores -------------------------------------------------------
 #Product Culture Scores
