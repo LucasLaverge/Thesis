@@ -2,7 +2,10 @@
 library(dplyr)
 library(ggplot2)
 library(likert)
-
+library(tidyr)
+library(broom)
+library(psych)
+library(GPArotation)
 
 # Overview of respondents -------------------------------------------------------
   # Industry
