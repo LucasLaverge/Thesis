@@ -134,7 +134,7 @@ replace_NA_with_avg <- function(df, target_cols, other_cols) {
   
 # Fill in the 'Other" with corresponding text answers ----------------------------------------------------------
   # Industries
-  df$q3.1[df$q3.1 == "Other"] <- df$q3.1_7_text[df$q3.1 == "Other"]
+  # df$q3.1[df$q3.1 == "Other"] <- df$q3.1_7_text[df$q3.1 == "Other"]
   #Regions
   df$q3.2[df$q3.2 == "Other"] <- df$q3.2_7_text[df$q3.2 == "Other"]
     # Extra remove row containing USA and replace Leuven with flemish brabant
@@ -145,6 +145,7 @@ replace_NA_with_avg <- function(df, target_cols, other_cols) {
     excluded.variables <- c("q3.1_7_text", "q3.2_7_text")
     df <- df %>% 
       dplyr::select(-excluded.variables)
+    
     remove(excluded.variables) 
     
 # Give meaningful columnn names ----------------------------------------------------------
@@ -201,4 +202,5 @@ replace_NA_with_avg <- function(df, target_cols, other_cols) {
   
   # Remove function
   remove(remove_NA_rows, remove_all_NA_rows, replace_NA_with_avg, agile.replace, innovation.replace, execution.replace, cols)
+  
   
