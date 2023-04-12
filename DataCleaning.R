@@ -13,7 +13,7 @@ remove_all_NA_rows <- function(df) {
   #' @param df    Passing a data frame
   #' @return      Data frame NA filtered rows
   
-  return(df %>% filter(rowSums(is.na(df[,6:65])) < 1 ))
+  return(df %>% filter(rowSums(is.na(df[,2:65])) < 1 ))
 }
 
 remove_NA_rows <- function(df) {
@@ -140,6 +140,7 @@ replace_NA_with_avg <- function(df, target_cols, other_cols) {
     # Extra remove row containing USA and replace Leuven with flemish brabant
     df <- df[!grepl("(?i)^.*usa.*$", df$q3.2), ] #remove usa row
     df$q3.2[df$q3.2 == "Leuven"] <- "Flemish-Brabant" # Change Leuven to it's correct region
+    
     #Remove text variables 
     excluded.variables <- c("q3.1_7_text", "q3.2_7_text")
     df <- df %>% 
