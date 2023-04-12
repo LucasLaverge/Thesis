@@ -6,13 +6,9 @@ library(tidyr)
 library(broom)
 library(psych)
 library(GPArotation)
-
+?aes
 # Categorization -----------------------------------------------------------------
 # Create the plot
-  ggplot(df, aes(innovation.score, execution.score)) +
-    geom_point() + # Add points
-    scale_x_continuous(limits = c(0.5, 1)) + # Set the x-axis limits
-    scale_y_continuous(limits = c(0.5, 1)) # Set the y-axis limits
   # Plot scores 
   plot(df$innovation.score, df$execution.score)
 
@@ -31,19 +27,36 @@ library(GPArotation)
   kmeans.result$cluster
   # View the centroids
   kmeans.result$centers
-  # Create a scatter plot of the clustering results
-  ggplot(df, aes(x = innovation.score, y = execution.score, color = factor(kmeans.result$cluster))) +
-    geom_point(size = 3) +
-    scale_color_discrete(name = "Cluster") +
-    geom_point(data = as.data.frame(kmeans.result$centers),
-               aes(x = innovation.score, y = execution.score),
-               color = "black", size = 5, shape = 21) +
-    ggtitle("K-means Clustering Results") +
-    labs(x = "Innovation Score", y = "Execution Score")
-  
   # Get number of iterations
   num_iterations <- kmeans.result$iter
   print(num_iterations)
+  
+## PLOTTING --------------------------------------------------------
+  cluster.names <- c("Leaders", "Innovators", "Executors", "Laggers")
+  # Create a scatter plot of the clustering results
+  ggplot(df, aes(x = innovation.score, y = execution.score, color = factor(kmeans.result$cluster))) +
+    geom_point(size = 3) +
+    scale_color_discrete(name = "Cluster", labels = cluster.names) +
+    geom_point(data = as.data.frame(kmeans.result$centers),
+               aes(x = innovation.score, y = execution.score),
+               color = "black", size = 4, shape = 21) +
+    ggtitle("K-means Clustering Results") +
+    labs(x = "Innovation Score", y = "Execution Score")
+  
+# Plot initial state
+  # Create a data frame with the coordinates of the additional points
+  new_points <- data.frame(innovation.score = c(1, 1, 0.5, 0.5),
+                           execution.score = c(1, 0.5, 1, 0.5))
+  
+  # Plot the data points and the additional points
+  ggplot(df, aes(x = innovation.score, y = execution.score)) +
+    geom_point(size = 3) +
+    geom_point(data = new_points, aes(x = innovation.score, y = execution.score), color = "black", size = 4, shape= 21) +
+    ggtitle("K-means Initial Cluster Centers")
+  
+
+  #-------------------------------------------------------- 
+
   
   # Remove
   remove(vars, dataset, kmeans.result)
