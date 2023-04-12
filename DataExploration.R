@@ -7,6 +7,10 @@ library(broom)
 library(psych)
 library(GPArotation)
 
+# TO DO 
+# Change to % instead of total values
+
+
 # Overview of respondents -------------------------------------------------------
   # Industry
   # Region
@@ -151,7 +155,7 @@ df %>%
     geom_histogram(bins = 10, color = "black", fill = "lightblue") +
     labs(x = "Product Culture Score", y = "Frequency",
          title = "Histogram of Product Culture Scores") +
-    facet_wrap(~ it + region) # Change this with region, industry, size etc.
+    facet_wrap(~ it ) # Change this with region, industry, size etc.
   # Assess the plot distribution
   # Summary statistics of distribution
   summary(df$product.score)
@@ -207,6 +211,9 @@ df %>%
   # Execution as predictor
   model4 <- lm(agile.score ~ execution.score, data = df)
   summary(model4)
+  plot(df$execution.score, df$agile.score, col = "darkblue")
+  # Plot the regression line
+  abline(model4, col = "darkred")
   
   
 ######## Remove outliers and look again #############
