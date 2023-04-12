@@ -146,7 +146,7 @@ replace_NA_with_avg <- function(df, target_cols, other_cols) {
       dplyr::select(-excluded.variables)
     remove(excluded.variables) 
     
-# Give meaningful columnnames ----------------------------------------------------------
+# Give meaningful columnn names ----------------------------------------------------------
     # Industry
     names(df)[names(df) == "q3.1"] <- "industry"
     # Region
