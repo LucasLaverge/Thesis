@@ -137,12 +137,18 @@ df %>%
 
 #--------------------------------------------------------------------------------------------------------------  
 # Overview of scores -------------------------------------------------------
-  # Calculate scores
-  df$innovation.score = rowSums(df[, paste0("q4.", 2:22)]) # innovation score calculation
-  df$execution.score = rowSums(df[, paste0("q5.", 2:28)]) # execution score calculation
-  df$product.score = df$execution.score + df$innovation.score # product culture score (sum of innovation and execution)
-  df$agile.score = rowSums(df[, paste0("q6.", 2:13)]) #agile score calculation
+  # Calculate abslolute scores
+  df$innovation.score.abs = rowSums(df[, paste0("q4.", 2:22)]) # innovation score calculation
+  df$execution.score.abs = rowSums(df[, paste0("q5.", 2:28)]) # execution score calculation
+  df$product.score.abs = df$execution.score + df$innovation.score # product culture score (sum of innovation and execution)
+  df$agile.score.abs = rowSums(df[, paste0("q6.", 2:13)]) #agile score calculation
   
+  # Add relative scores
+  df$innovation.score <- df$innovation.score.abs/(21*5)
+  df$execution.score <- df$execution.score.abs / (27*5)
+  plot(df$innovation.score, df$execution.score)
+  df$product.score <- (df$innovation.score + df$execution.score) /2
+  df$agile.score <- df$agile.score.abs/(12*7)
   
 #Product Culture Scores
   # A histogram plot of the total scores and brief analysis of results derived from plot.

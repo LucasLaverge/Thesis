@@ -20,7 +20,8 @@ library(GPArotation)
   # Select the variables to use in clustering
   vars <- c("innovation.score", "execution.score")
   dataset <- df[vars]
-  # Run k-means clustering with k=3
+  # Run k-means clustering with k=4
+  set.seed(12345)
   kmeans.result <- kmeans(dataset, centers = 4)
   # View the cluster assignments
   kmeans.result$cluster
@@ -37,7 +38,8 @@ library(GPArotation)
     labs(x = "Innovation Score", y = "Execution Score")
   # Remove
   remove(vars, dataset, kmeans.result)
-
+  summary(df$execution.score)
+  summary(df$innovation.score)
 # Create groups
   
   # Plot per group the agile practice scores
