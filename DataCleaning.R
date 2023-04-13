@@ -202,5 +202,14 @@ replace_NA_with_avg <- function(df, target_cols, other_cols) {
   
   # Remove function
   remove(remove_NA_rows, remove_all_NA_rows, replace_NA_with_avg, agile.replace, innovation.replace, execution.replace, cols)
+
+
+######## Change column names from .2 to .1
+  # Rename columns from q6.2 to q6.13 to AP.1 to AP.12 + also for exec and innov
+  colnames(df)[6:17] <- paste0("AP.", 1:12)
+  colnames(df)[18:38] <- paste0("I.", 1:21)
+  colnames(df)[39:65] <- paste0("E.", 1:27)
+  
+  
   
   
