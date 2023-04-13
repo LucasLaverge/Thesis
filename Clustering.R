@@ -266,3 +266,15 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
   
   
   
+################## anova ##############################
+product.scores.groups <- data.frame(
+    scores = c(leaders.df$product.score, executors.df$product.score, innovators.df$product.score, laggers.df$product.score ),
+    group = rep(c("Leaders", "Executors", "Innovators", "Laggers"),
+                times = c(nrow(leaders.df), nrow(executors.df), nrow(innovators.df), nrow(laggers.df)))
+  )
+
+  model <- aov(scores ~ group, data = product.scores.groups)
+  summary(model)
+  
+  
+  
