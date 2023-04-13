@@ -6,7 +6,7 @@ library(tidyr)
 library(broom)
 library(psych)
 library(GPArotation)
-?aes
+
 # Categorization -----------------------------------------------------------------
 # Create the plot
   # Plot scores 
@@ -28,8 +28,7 @@ library(GPArotation)
   # View the centroids
   kmeans.result$centers
   # Get number of iterations
-  num_iterations <- kmeans.result$iter
-  print(num_iterations)
+  print(kmeans.result$iter)
   
 ## PLOTTING --------------------------------------------------------
   cluster.names <- c("Leaders", "Innovators", "Executors", "Laggers")
@@ -45,30 +44,99 @@ library(GPArotation)
   
 # Plot initial state
   # Create a data frame with the coordinates of the additional points
-  new_points <- data.frame(innovation.score = c(1, 1, 0.5, 0.5),
+  new.points <- data.frame(innovation.score = c(1, 1, 0.5, 0.5),
                            execution.score = c(1, 0.5, 1, 0.5))
   
   # Plot the data points and the additional points
   ggplot(df, aes(x = innovation.score, y = execution.score)) +
     geom_point(size = 3) +
-    geom_point(data = new_points, aes(x = innovation.score, y = execution.score), color = "black", size = 4, shape= 21) +
+    geom_point(data = new.points, aes(x = innovation.score, y = execution.score), color = "black", size = 4, shape= 21) +
     ggtitle("K-means Initial Cluster Centers")
   
-
+  remove(vars, cluster.names, initial.centres, new.points)
   #-------------------------------------------------------- 
-
-  
-  # Remove
-  remove(vars, dataset, kmeans.result)
   summary(df$execution.score)
   summary(df$innovation.score)
+  
+############################
+# Combine kmeans cluster data to original df
+df.test <- df %>% mutate(cluster = kmeans.result$cluster)
 # Create groups
+  # Create new dataframe with only cluster 1 (Leaders)
+  leaders.df <- filter(df.test, cluster == 1)
+  summary(leaders.df$agile.score.abs)
+  # Create new dataframe with only cluster 2 (Innovators)
+  innovators.df <- filter(df.test, cluster == 2)
+  summary(leaders.df$agile.score.abs)
+  # Create new dataframe with only cluster 3 (Executors)
+  executors.df <- filter(df.test, cluster == 3)
+  # Create new dataframe with only cluster 4 (Laggers)
+  laggers.df <- filter(df.test, cluster == 4)
+  
   
   # Plot per group the agile practice scores
+  plot(leaders.df$agile.score, leaders.df$product.score)
+  hist(leaders.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
+       ylab = "Frequency", 
+       main = "Histogram of Product Culture Scores",
+       col = "lightblue")
+  
+  plot(innovators.df$agile.score, innovators.df$product.score)
+  hist(innovators.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
+       ylab = "Frequency", 
+       main = "Histogram of Product Culture Scores",
+       col = "lightblue")
+  
+  plot(executors.df$agile.score, executors.df$product.score)
+  hist(executors.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
+       ylab = "Frequency", 
+       main = "Histogram of Product Culture Scores",
+       col = "lightblue")
+  
+  plot(laggers.df$agile.score, laggers.df$product.score)
+  hist(laggers.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
+       ylab = "Frequency", 
+       main = "Histogram of Product Culture Scores",
+       col = "lightblue")
+  
+  
+  
+## Agile practices number -------------------------------------------
+  ## LEADERS
+  barplot((colSums(leaders.df[, col.names])/nrow(leaders.df)), 
+          main = "LEADERS", 
+          xlab = "Statements", 
+          ylab = "# Agile Practices", 
+          names.arg = c(paste0("q6.", 2:13)), 
+          col = "lightblue",
+          ylim = c(0, 7))
+  
+  ## LAGGERS
+  barplot((colSums(laggers.df[, col.names])/nrow(laggers.df)), 
+          main = "LAGGERS", 
+          xlab = "Statements", 
+          ylab = "# Agile Practices", 
+          names.arg = c(paste0("q6.", 2:13)), 
+          col = "lightblue",
+          ylim = c(0, 7))
+  
+  ## EXECUTORS
+  barplot((colSums(executors.df[, col.names])/nrow(executors.df)), 
+          main = "EXECUTORS", 
+          xlab = "Statements", 
+          ylab = "# Agile Practices", 
+          names.arg = c(paste0("q6.", 2:13)), 
+          col = "lightblue",
+          ylim = c(0, 7))
+  
+  ## INNOVATORS
+  barplot((colSums(innovators.df[, col.names])/nrow(innovators.df)), 
+          main = "INNOVATORS", 
+          xlab = "Statements", 
+          ylab = "# Agile Practices", 
+          names.arg = c(paste0("q6.", 2:13)), 
+          col = "lightblue",
+          ylim = c(0, 7))
 
-
-
-
-
-
-
+  
+  

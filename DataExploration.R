@@ -244,7 +244,7 @@ df %>%
   # Remove
   # Delete the column named "agile.binned" from the original data frame
   df <- df[, !names(df) %in% c("agile.binned")]
-  remove(summary.df)
+  remove(summary.df, model1, model2, model3, model4)
 #-------------------------------------------------------------------------------------------------------------- 
   
   
