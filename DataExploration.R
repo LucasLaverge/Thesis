@@ -138,10 +138,10 @@ df %>%
 #--------------------------------------------------------------------------------------------------------------  
 # Overview of scores -------------------------------------------------------
   # Calculate abslolute scores
-  df$innovation.score.abs = rowSums(df[, paste0("q4.", 2:22)]) # innovation score calculation
-  df$execution.score.abs = rowSums(df[, paste0("q5.", 2:28)]) # execution score calculation
+  df$innovation.score.abs = rowSums(df[, paste0("I.", 1:21)]) # innovation score calculation
+  df$execution.score.abs = rowSums(df[, paste0("E.", 1:27)]) # execution score calculation
   df$product.score.abs = df$execution.score + df$innovation.score # product culture score (sum of innovation and execution)
-  df$agile.score.abs = rowSums(df[, paste0("q6.", 2:13)]) #agile score calculation
+  df$agile.score.abs = rowSums(df[, paste0("AP.", 1:12)]) #agile score calculation
   
   # Add relative scores
   df$innovation.score <- df$innovation.score.abs/(21*5)
