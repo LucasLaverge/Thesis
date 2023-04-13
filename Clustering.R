@@ -53,7 +53,7 @@ library(GPArotation)
     geom_point(data = new.points, aes(x = innovation.score, y = execution.score), color = "black", size = 4, shape= 21) +
     ggtitle("K-means Initial Cluster Centers")
   
-  remove(cluster.names, initial.centres, new.points, dataset)
+  remove(initial.centres, new.points, dataset)
   #-------------------------------------------------------- 
   summary(df$execution.score)
   summary(df$innovation.score)
@@ -285,18 +285,21 @@ product.scores.groups <- data.frame(
   
   remove(model, product.scores.groups)
 ####################### IT vs NON-IT PIE CHARTS ######################
-  
-  # Create a vector of values
-  values <- c(30, 20, 50, 30)
-  
-  # Create labels for the slices
-  labels <- c("Leader", "Executor", "Innovator", "Lagger")
-  
-  # Create a color palette
-  colors <- c("red", "green", "blue", "purple")
-  
+  # Create df with only IT companies
+  df.it <- df %>% 
+    filter(df$it == "Yes")
+  # Create freq table
+  freq.table.it <- table(df.it$cluster)
   # Create the pie chart
-  pie(values, labels = labels, col = colors)
+  pie(freq.table.it, labels = cluster.names, col = cluster.colors, main = "IT")
+  
+  # Create df with only  NON IT companies
+  df.no.it <- df %>% 
+    filter(df$it == "No")
+  # Create freq table
+  freq.table.no.it <- table(df.no.it$cluster)
+  # Create the pie chart
+  pie(freq.table.no.it, labels = cluster.names, col = cluster.colors, main = "NON IT")
   
   
   
