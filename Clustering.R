@@ -14,8 +14,7 @@ library(GPArotation)
 
 # K-means clustering  ----> is random at the moment, in final version set a seed so that we obtain a consistent result
   # Select the variables to use in clustering
-  vars <- c("innovation.score", "execution.score")
-  dataset <- df[vars]
+  dataset <- df[c("innovation.score", "execution.score")]
   # Run k-means clustering with k=4
   # set.seed(12345)
   initial.centres <- matrix(c(1, 1,0.5, 0.5,
@@ -53,7 +52,7 @@ library(GPArotation)
     geom_point(data = new.points, aes(x = innovation.score, y = execution.score), color = "black", size = 4, shape= 21) +
     ggtitle("K-means Initial Cluster Centers")
   
-  remove(vars, cluster.names, initial.centres, new.points)
+  remove(cluster.names, initial.centres, new.points, dataset)
   #-------------------------------------------------------- 
   summary(df$execution.score)
   summary(df$innovation.score)
@@ -104,41 +103,119 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
   
   
 ## Agile practices number -------------------------------------------
+  ## Calculate the # agile practices for each group
+  leaders.n.practices <- colSums(leaders.df[, 6:17]) / nrow(leaders.df)
+  laggers.n.practices <- colSums(laggers.df[, 6:17]) / nrow(laggers.df)
+  executors.n.practices <- colSums(executors.df[, 6:17]) / nrow(executors.df)
+  innovators.n.practices <- colSums(innovators.df[, 6:17]) / nrow(innovators.df)
+  
   ## LEADERS
-  barplot((colSums(leaders.df[, col.names])/nrow(leaders.df)), 
+  barplot(leaders.n.practices, 
           main = "LEADERS", 
           xlab = "Statements", 
           ylab = "# Agile Practices", 
-          names.arg = c(paste0("q6.", 2:13)), 
+          names.arg = c(paste0("AP.", 1:12)), 
           col = "lightblue",
           ylim = c(0, 7))
   
   ## LAGGERS
-  barplot((colSums(laggers.df[, col.names])/nrow(laggers.df)), 
+  barplot(laggers.n.practices, 
           main = "LAGGERS", 
           xlab = "Statements", 
           ylab = "# Agile Practices", 
-          names.arg = c(paste0("q6.", 2:13)), 
+          names.arg = c(paste0("AP.", 1:12)), 
           col = "lightblue",
           ylim = c(0, 7))
   
   ## EXECUTORS
-  barplot((colSums(executors.df[, col.names])/nrow(executors.df)), 
+  barplot(executors.n.practices, 
           main = "EXECUTORS", 
           xlab = "Statements", 
           ylab = "# Agile Practices", 
-          names.arg = c(paste0("q6.", 2:13)), 
+          names.arg = c(paste0("AP.", 1:12)), 
           col = "lightblue",
           ylim = c(0, 7))
   
   ## INNOVATORS
-  barplot((colSums(innovators.df[, col.names])/nrow(innovators.df)), 
+  barplot(innovators.n.practices, 
           main = "INNOVATORS", 
           xlab = "Statements", 
           ylab = "# Agile Practices", 
-          names.arg = c(paste0("q6.", 2:13)), 
+          names.arg = c(paste0("AP.", 1:12)), 
           col = "lightblue",
           ylim = c(0, 7))
 
+######## Plot them next to eachother
+  
+  
+# LEADERS VS LAGGERS
+# Create the barplot
+  bp1 <- barplot(rbind(leaders.n.practices, laggers.n.practices),
+                beside = TRUE,
+                main = "Agile Practices",
+                xlab = "Statements",
+                ylab = "# Agile Practices",
+                names.arg = c(paste0("AP.", 1:12)),
+                col = c("lightblue", "salmon"),
+                ylim = c(0, 7),
+                legend.text = c("Leaders", "Laggers"),
+                args.legend = list(x = "topright", 
+                                   fill = c("lightblue", "salmon")))
+  # Add the bar values at the top of each bar
+  for (i in 1:length(bp1)) {
+    text(
+      x = bp1[i], 
+      y = rbind(leaders.n.practices, laggers.n.practices)[i] + 0.0001, 
+      labels = round(rbind(leaders.n.practices, laggers.n.practices)[i], 1),
+      pos = 3, cex = 0.8
+    )
+  }
+  
+  
+# INNOVATORS VS EXECUTORS
+  bp2 <- barplot(rbind(executors.n.practices, innovators.n.practices),
+    beside = TRUE,
+    main = "Agile Practices",
+    xlab = "Statements",
+    ylab = "# Agile Practices",
+    names.arg = c(paste0("AP.", 1:12)),
+    col = c("thistle", "#008080"),
+    ylim = c(0, 7),
+    legend.text = c("Executors", "Innovators"),
+    args.legend = list(x = "topright", 
+                       fill = c("thistle", "#008080")))
+  # Add the bar values at the top of each bar
+  for (i in 1:length(bp2)) {
+    text(
+      x = bp2[i], 
+      y = rbind(executors.n.practices, innovators.n.practices)[i] + 0.0001, 
+      labels = round(rbind(executors.n.practices, innovators.n.practices)[i], 1),
+      pos = 3, cex = 0.8
+    )
+  }
+  
+  
+# COMPARE AL FOUR OF THEM
+  bp3 <- barplot(rbind(leaders.n.practices, executors.n.practices, innovators.n.practices, laggers.n.practices),
+                 beside = TRUE,
+                 main = "Agile Practices",
+                 xlab = "Statements",
+                 ylab = "# Agile Practices",
+                 names.arg = c(paste0("AP.", 1:12)),
+                 col = c("lightblue","thistle", "#008080", "salmon"),
+                 ylim = c(0, 7),
+                 legend.text = c("Leaders", "Executors", "Innovators", "Laggers"),
+                 args.legend = list(x = "topright",cex = 0.7,
+                                    fill = c("lightblue","#D8BFD8","#008080", "salmon")))
+  # Add the bar values at the top of each bar
+  for (i in 1:length(bp3)) {
+    text(
+      x = bp3[i], 
+      y = rbind(leaders.n.practices, executors.n.practices, innovators.n.practices, laggers.n.practices)[i] + 0.0001, 
+      labels = round(rbind(leaders.n.practices,executors.n.practices, innovators.n.practices, laggers.n.practices)[i], 1),
+      pos = 3.5, cex = 0.8
+    )
+  }
+  
   
   
