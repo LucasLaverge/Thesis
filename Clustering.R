@@ -31,7 +31,7 @@ library(GPArotation)
   
 ## PLOTTING --------------------------------------------------------
   cluster.names <- c("Leaders", "Innovators", "Executors", "Laggers")
-  cluster.colors <- c("salmon","#008080", "thistle", "lightblue")
+  cluster.colors <- c("salmon","#008080", "thistle", "lightblue") # COLOR GRADING ADAPT ONLY HERE
   # Create a scatter plot of the clustering results
   ggplot(df, aes(x = innovation.score, y = execution.score, color = factor(kmeans.result$cluster))) +
     geom_point(size = 3) +
@@ -92,25 +92,25 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
   hist(leaders.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
        ylab = "Frequency", 
        main = "Histogram of Product Culture Scores",
-       col = "salmon")
+       col = cluster.colors[1])
   
   plot(innovators.df$agile.score, innovators.df$product.score)
   hist(innovators.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
        ylab = "Frequency", 
        main = "Histogram of Product Culture Scores",
-       col = "lightblue")
+       col = cluster.colors[3])
   
   plot(executors.df$agile.score, executors.df$product.score)
   hist(executors.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
        ylab = "Frequency", 
        main = "Histogram of Product Culture Scores",
-       col = "lightblue")
+       col = cluster.colors[2])
   
   plot(laggers.df$agile.score, laggers.df$product.score)
   hist(laggers.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
        ylab = "Frequency", 
        main = "Histogram of Product Culture Scores",
-       col = "lightblue")
+       col = cluster.colors[4])
   
   
   
@@ -127,7 +127,7 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
           xlab = "Statements", 
           ylab = "# Agile Practices", 
           names.arg = c(paste0("AP.", 1:12)), 
-          col = "salmon",
+          col = cluster.colors[1],
           ylim = c(0, 7))
   # Add the bar values at the top of each bar
   for (i in 1:length(bp.leaders)) {
@@ -145,7 +145,7 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
           xlab = "Statements", 
           ylab = "# Agile Practices", 
           names.arg = c(paste0("AP.", 1:12)), 
-          col = "lightblue",
+          col = cluster.colors[4],
           ylim = c(0, 7))
   # Add the bar values at the top of each bar
   for (i in 1:length(bp.laggers)) {
@@ -163,7 +163,7 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
           xlab = "Statements", 
           ylab = "# Agile Practices", 
           names.arg = c(paste0("AP.", 1:12)), 
-          col = "#008080",
+          col = cluster.colors[2],
           ylim = c(0, 7))
   # Add the bar values at the top of each bar
   for (i in 1:length(bp.executors)) {
@@ -181,7 +181,7 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
           xlab = "Statements", 
           ylab = "# Agile Practices", 
           names.arg = c(paste0("AP.", 1:12)), 
-          col = "thistle",
+          col = cluster.colors[3],
           ylim = c(0, 7))
   # Add the bar values at the top of each bar
   for (i in 1:length(bp.innovators)) {
@@ -193,6 +193,7 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
     )
   }
 
+  
 ######## Plot them next to eachother
   
   
@@ -204,11 +205,11 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
                 xlab = "Statements",
                 ylab = "# Agile Practices",
                 names.arg = c(paste0("AP.", 1:12)),
-                col = c("salmon", "lightblue"),
+                col = c(cluster.colors[1], cluster.colors[4]),
                 ylim = c(0, 7),
                 legend.text = c("Leaders", "Laggers"),
                 args.legend = list(x = "topright", 
-                                   fill = c("salmon", "lightblue")))
+                                   fill = c(cluster.colors[1], cluster.colors[4])))
   # Add the bar values at the top of each bar
   for (i in 1:length(bp1)) {
     text(
@@ -227,11 +228,11 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
     xlab = "Statements",
     ylab = "# Agile Practices",
     names.arg = c(paste0("AP.", 1:12)),
-    col = c("#008080", "thistle"),
+    col = c(cluster.colors[2], cluster.colors[3]),
     ylim = c(0, 7),
     legend.text = c("Executors", "Innovators"),
     args.legend = list(x = "topright", 
-                       fill = c("#008080", "thistle")))
+                       fill = c(cluster.colors[2], cluster.colors[3])))
   # Add the bar values at the top of each bar
   for (i in 1:length(bp2)) {
     text(
@@ -249,11 +250,11 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
                  xlab = "Statements",
                  ylab = "# Agile Practices",
                  names.arg = c(paste0("AP.", 1:12)),
-                 col = c("salmon","#008080", "thistle", "lightblue"),
+                 col = cluster.colors,
                  ylim = c(0, 7),
                  legend.text = c("Leaders", "Executors", "Innovators", "Laggers"),
                  args.legend = list(x = "topright",cex = 0.7,
-                                    fill = c("salmon","#008080","thistle", "lightblue")))
+                                    fill = cluster.colors))
   # Add the bar values at the top of each bar
   for (i in 1:length(bp3)) {
     text(
@@ -264,7 +265,8 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
     )
   }
   
-  
+  remove(leaders.n.practices, executors.n.practices, laggers.n.practices, innovators.n.practices, i,
+         bp.executors, bp.innovators, bp.laggers, bp.leaders) 
   
 ################## anova ##############################
 product.scores.groups <- data.frame(
@@ -275,6 +277,27 @@ product.scores.groups <- data.frame(
 
   model <- aov(scores ~ group, data = product.scores.groups)
   summary(model)
+  
+# Boxplots
+  ggplot(product.scores.groups, aes(x = group, y = scores)) + 
+    geom_boxplot()
+  TukeyHSD(model)
+  
+  remove(model, product.scores.groups)
+####################### IT vs NON-IT PIE CHARTS ######################
+  
+  # Create a vector of values
+  values <- c(30, 20, 50, 30)
+  
+  # Create labels for the slices
+  labels <- c("Leader", "Executor", "Innovator", "Lagger")
+  
+  # Create a color palette
+  colors <- c("red", "green", "blue", "purple")
+  
+  # Create the pie chart
+  pie(values, labels = labels, col = colors)
+  
   
   
   
