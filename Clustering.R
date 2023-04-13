@@ -31,10 +31,11 @@ library(GPArotation)
   
 ## PLOTTING --------------------------------------------------------
   cluster.names <- c("Leaders", "Innovators", "Executors", "Laggers")
+  cluster.colors <- c("salmon","#008080", "thistle", "lightblue")
   # Create a scatter plot of the clustering results
   ggplot(df, aes(x = innovation.score, y = execution.score, color = factor(kmeans.result$cluster))) +
     geom_point(size = 3) +
-    scale_color_discrete(name = "Cluster", labels = cluster.names) +
+    scale_color_manual(name = "Cluster", labels = cluster.names, values = cluster.colors) +
     geom_point(data = as.data.frame(kmeans.result$centers),
                aes(x = innovation.score, y = execution.score),
                color = "black", size = 4, shape = 21) +
@@ -64,23 +65,34 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
   # Create new dataframe with only cluster 1 (Leaders)
   leaders.df <- filter(df, cluster == 1)
   summary(leaders.df$agile.score.abs)
+  var(leaders.df$agile.score.abs)
+  summary(leaders.df$product.score.abs)
+  summary(leaders.df$product.score)
   # Create new dataframe with only cluster 2 (Innovators)
   innovators.df <- filter(df, cluster == 2)
-  summary(innovators.df$agile.score.abs)
+  summary(innovators.df$agile.score)
+  var(innovators.df$agile.score.abs)
+  summary(innovators.df$product.score.abs)
+  summary(innovators.df$product.score)
   # Create new dataframe with only cluster 3 (Executors)
   executors.df <- filter(df, cluster == 3)
-  summary(executors.df$agile.score.abs)
+  summary(executors.df$agile.score)
+  var(executors.df$agile.score.abs)
+  summary(executors.df$product.score.abs)
+  summary(executors.df$product.score)
   # Create new dataframe with only cluster 4 (Laggers)
   laggers.df <- filter(df, cluster == 4)
-  summary(laggers.df$agile.score.abs)
-  
+  summary(laggers.df$agile.score)
+  var(laggers.df$agile.score.abs)
+  summary(laggers.df$product.score.abs)
+  summary(laggers.df$product.score)
   
   # Plot per group the agile practice scores
   plot(leaders.df$agile.score, leaders.df$product.score)
   hist(leaders.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
        ylab = "Frequency", 
        main = "Histogram of Product Culture Scores",
-       col = "lightblue")
+       col = "salmon")
   
   plot(innovators.df$agile.score, innovators.df$product.score)
   hist(innovators.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
@@ -110,40 +122,76 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
   innovators.n.practices <- colSums(innovators.df[, 6:17]) / nrow(innovators.df)
   
   ## LEADERS
-  barplot(leaders.n.practices, 
+  bp.leaders <- barplot(leaders.n.practices, 
           main = "LEADERS", 
           xlab = "Statements", 
           ylab = "# Agile Practices", 
           names.arg = c(paste0("AP.", 1:12)), 
-          col = "lightblue",
+          col = "salmon",
           ylim = c(0, 7))
+  # Add the bar values at the top of each bar
+  for (i in 1:length(bp.leaders)) {
+    text(
+      x = bp.leaders[i], 
+      y = leaders.n.practices[i] + 0.0001, 
+      labels = round(leaders.n.practices[i], 1),
+      pos = 3.5, cex = 0.8
+    )
+  }
   
   ## LAGGERS
-  barplot(laggers.n.practices, 
+  bp.laggers <- barplot(laggers.n.practices, 
           main = "LAGGERS", 
           xlab = "Statements", 
           ylab = "# Agile Practices", 
           names.arg = c(paste0("AP.", 1:12)), 
           col = "lightblue",
           ylim = c(0, 7))
+  # Add the bar values at the top of each bar
+  for (i in 1:length(bp.laggers)) {
+    text(
+      x = bp.laggers[i], 
+      y = laggers.n.practices[i] + 0.0001, 
+      labels = round(laggers.n.practices[i], 1),
+      pos = 3.5, cex = 0.8
+    )
+  }
   
   ## EXECUTORS
-  barplot(executors.n.practices, 
+  bp.executors <- barplot(executors.n.practices, 
           main = "EXECUTORS", 
           xlab = "Statements", 
           ylab = "# Agile Practices", 
           names.arg = c(paste0("AP.", 1:12)), 
-          col = "lightblue",
+          col = "#008080",
           ylim = c(0, 7))
+  # Add the bar values at the top of each bar
+  for (i in 1:length(bp.executors)) {
+    text(
+      x = bp.executors[i], 
+      y = executors.n.practices[i] + 0.0001, 
+      labels = round(executors.n.practices[i], 1),
+      pos = 3.5, cex = 0.8
+    )
+  }
   
   ## INNOVATORS
-  barplot(innovators.n.practices, 
+  bp.innovators <- barplot(innovators.n.practices, 
           main = "INNOVATORS", 
           xlab = "Statements", 
           ylab = "# Agile Practices", 
           names.arg = c(paste0("AP.", 1:12)), 
-          col = "lightblue",
+          col = "thistle",
           ylim = c(0, 7))
+  # Add the bar values at the top of each bar
+  for (i in 1:length(bp.innovators)) {
+    text(
+      x = bp.innovators[i], 
+      y = innovators.n.practices[i] + 0.0001, 
+      labels = round(innovators.n.practices[i], 1),
+      pos = 3.5, cex = 0.8
+    )
+  }
 
 ######## Plot them next to eachother
   
@@ -156,11 +204,11 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
                 xlab = "Statements",
                 ylab = "# Agile Practices",
                 names.arg = c(paste0("AP.", 1:12)),
-                col = c("lightblue", "salmon"),
+                col = c("salmon", "lightblue"),
                 ylim = c(0, 7),
                 legend.text = c("Leaders", "Laggers"),
                 args.legend = list(x = "topright", 
-                                   fill = c("lightblue", "salmon")))
+                                   fill = c("salmon", "lightblue")))
   # Add the bar values at the top of each bar
   for (i in 1:length(bp1)) {
     text(
@@ -179,11 +227,11 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
     xlab = "Statements",
     ylab = "# Agile Practices",
     names.arg = c(paste0("AP.", 1:12)),
-    col = c("thistle", "#008080"),
+    col = c("#008080", "thistle"),
     ylim = c(0, 7),
     legend.text = c("Executors", "Innovators"),
     args.legend = list(x = "topright", 
-                       fill = c("thistle", "#008080")))
+                       fill = c("#008080", "thistle")))
   # Add the bar values at the top of each bar
   for (i in 1:length(bp2)) {
     text(
@@ -194,7 +242,6 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
     )
   }
   
-  
 # COMPARE AL FOUR OF THEM
   bp3 <- barplot(rbind(leaders.n.practices, executors.n.practices, innovators.n.practices, laggers.n.practices),
                  beside = TRUE,
@@ -202,11 +249,11 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
                  xlab = "Statements",
                  ylab = "# Agile Practices",
                  names.arg = c(paste0("AP.", 1:12)),
-                 col = c("lightblue","thistle", "#008080", "salmon"),
+                 col = c("salmon","#008080", "thistle", "lightblue"),
                  ylim = c(0, 7),
                  legend.text = c("Leaders", "Executors", "Innovators", "Laggers"),
                  args.legend = list(x = "topright",cex = 0.7,
-                                    fill = c("lightblue","#D8BFD8","#008080", "salmon")))
+                                    fill = c("salmon","#008080","thistle", "lightblue")))
   # Add the bar values at the top of each bar
   for (i in 1:length(bp3)) {
     text(
