@@ -60,18 +60,20 @@ library(GPArotation)
   
 ############################
 # Combine kmeans cluster data to original df
-df.test <- df %>% mutate(cluster = kmeans.result$cluster)
+df <- df %>% mutate(cluster = kmeans.result$cluster)
 # Create groups
   # Create new dataframe with only cluster 1 (Leaders)
-  leaders.df <- filter(df.test, cluster == 1)
+  leaders.df <- filter(df, cluster == 1)
   summary(leaders.df$agile.score.abs)
   # Create new dataframe with only cluster 2 (Innovators)
-  innovators.df <- filter(df.test, cluster == 2)
-  summary(leaders.df$agile.score.abs)
+  innovators.df <- filter(df, cluster == 2)
+  summary(innovators.df$agile.score.abs)
   # Create new dataframe with only cluster 3 (Executors)
-  executors.df <- filter(df.test, cluster == 3)
+  executors.df <- filter(df, cluster == 3)
+  summary(executors.df$agile.score.abs)
   # Create new dataframe with only cluster 4 (Laggers)
-  laggers.df <- filter(df.test, cluster == 4)
+  laggers.df <- filter(df, cluster == 4)
+  summary(laggers.df$agile.score.abs)
   
   
   # Plot per group the agile practice scores
