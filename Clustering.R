@@ -30,7 +30,7 @@ library(GPArotation)
   print(kmeans.result$iter)
   
 ## PLOTTING --------------------------------------------------------
-  cluster.names <- c("Leaders", "Innovators", "Executors", "Laggers")
+  cluster.names <- c("Leaders", "Executors", "Innovators", "Laggers")
   cluster.colors <- c("salmon","#008080", "thistle", "lightblue") # COLOR GRADING ADAPT ONLY HERE
   # Create a scatter plot of the clustering results
   ggplot(df, aes(x = innovation.score, y = execution.score, color = factor(kmeans.result$cluster))) +
@@ -61,6 +61,7 @@ library(GPArotation)
 ############################
 # Combine kmeans cluster data to original df
 df <- df %>% mutate(cluster = kmeans.result$cluster)
+  remove(kmeans.result)
 # Create groups
   # Create new dataframe with only cluster 1 (Leaders)
   leaders.df <- filter(df, cluster == 1)
@@ -266,7 +267,8 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
   }
   
   remove(leaders.n.practices, executors.n.practices, laggers.n.practices, innovators.n.practices, i,
-         bp.executors, bp.innovators, bp.laggers, bp.leaders) 
+         bp.executors, bp.innovators, bp.laggers, bp.leaders, bp1, bp2, bp3)
+
   
 ################## anova ##############################
 product.scores.groups <- data.frame(
@@ -284,23 +286,60 @@ product.scores.groups <- data.frame(
   TukeyHSD(model)
   
   remove(model, product.scores.groups)
+  
+  
 ####################### IT vs NON-IT PIE CHARTS ######################
-  # Create df with only IT companies
+# Create df with only IT  and non-it companies
   df.it <- df %>% 
     filter(df$it == "Yes")
-  # Create freq table
-  freq.table.it <- table(df.it$cluster)
-  # Create the pie chart
-  pie(freq.table.it, labels = cluster.names, col = cluster.colors, main = "IT")
-  
-  # Create df with only  NON IT companies
-  df.no.it <- df %>% 
+  df.it.no <- df %>% 
     filter(df$it == "No")
-  # Create freq table
-  freq.table.no.it <- table(df.no.it$cluster)
-  # Create the pie chart
-  pie(freq.table.no.it, labels = cluster.names, col = cluster.colors, main = "NON IT")
+# Create freq table
+  freq.it <- table(df.it$cluster)
+  freq.it.no <- table(df.it.no$cluster)
+# Create the pie chart
+  par(mfrow=c(1,2)) # Set the plotting area to have 1 row and 2 columns
+  pie(freq.it, labels = cluster.names, col = cluster.colors, main = "IT")
+  pie(freq.it.no, labels = cluster.names, col = cluster.colors, main = "NON IT")
+  dev.off()
+  
+  remove(df.it, df.it.no, freq.it, freq.it.no)
   
   
+####################### REGION COMPARISON PIE CHARTS ######################
+# Create df with only IT  and non-it companies
+  df.A <- df %>% 
+    filter(df$region == "Antwerp")
+  df.B <- df %>% 
+    filter(df$region == "Brussel")
+  df.EF <- df %>% 
+    filter(df$region == "East-Flanders")
+  df.FB <- df %>% 
+    filter(df$region == "Flemish-Brabant")
+  df.WF <- df %>% 
+    filter(df$region == "West-Flanders")
+# Create freq table
+  freq.A <- table(df.A$cluster)
+  freq.B <- table(df.B$cluster)
+  freq.EF <- table(df.EF$cluster)
+  freq.FB <- table(df.FB$cluster)
+  freq.WF <- table(df.WF$cluster)
   
-  
+  par(mfrow=c(2,2))
+  pie(freq.A, labels = cluster.names, col = cluster.colors, main = "Antwerp")
+  pie(freq.B.FB, labels = cluster.names, col = cluster.colors, main = "Brussels and Flemish-Brabant")
+  pie(freq.EF, labels = cluster.names, col = cluster.colors, main = "East-Flanders")
+  pie(freq.WF, labels = cluster.names, col = cluster.colors, main = "West-Flanders")
+  dev.off()
+
+  barplot(t(rbind(freq.A, freq.EF, freq.WF)),
+          beside = TRUE,
+          main = "Number of instances per Region",
+          xlab = "Region",
+          ylab = "Number of instance",
+          col = cluster.colors,
+          names.arg= c("Antwerp", " East-Flanders", "West-Flanders" ),
+          legend.text = c("Leaders", "Executors", "Innovators", "Laggers"),
+          args.legend = list(x = "topleft",cex = 1,
+                             fill = cluster.colors))
+
