@@ -352,4 +352,7 @@ product.scores.groups <- data.frame(
           legend.text = c("Leaders", "Executors", "Innovators", "Laggers"),
           args.legend = list(x = "topleft",cex = 1,
                              fill = cluster.colors))
+  
+  
+  remove(freq.A, freq.B, freq.EF, freq.FB, freq.WF, df.A, df.B, df.EF, df.FB, df.WF)
 
