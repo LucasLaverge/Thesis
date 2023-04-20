@@ -6,6 +6,7 @@ library(tidyr)
 library(broom)
 library(psych)
 library(GPArotation)
+library(stargazer)
 
 # Categorization -----------------------------------------------------------------
 # Create the plot
@@ -256,6 +257,8 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
                  legend.text = c("Leaders", "Executors", "Innovators", "Laggers"),
                  args.legend = list(x = "topright",cex = 0.7,
                                     fill = cluster.colors))
+  
+  
   # Add the bar values at the top of each bar
   for (i in 1:length(bp3)) {
     text(
@@ -279,13 +282,20 @@ product.scores.groups <- data.frame(
 
   model <- aov(scores ~ group, data = product.scores.groups)
   summary(model)
+  # Create a LaTeX table from the ANOVA model using xtable
+  xtable(model, caption = "One-way ANOVA Table", label = "tab:anova")
   
 # Boxplots
   ggplot(product.scores.groups, aes(x = group, y = scores)) + 
     geom_boxplot()
-  TukeyHSD(model)
+
+# Tukey HSD
+  tukey <- TukeyHSD(model)
+# Create a stargazer table for the Tukey HSD test
+  stargazer(tukey, title = "Tukey HSD Test", type = "text")
   
-  remove(model, product.scores.groups)
+  
+  remove(model, product.scores.groups, tukey)
   
   
 ####################### IT vs NON-IT PIE CHARTS ######################
