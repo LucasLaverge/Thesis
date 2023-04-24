@@ -24,7 +24,7 @@ summary(df)
 df %>%
   group_by(industry) %>%
   summarise(count = n()) %>%
-  ggplot(aes(x = industry, y = count, col = "red")) +
+  ggplot(aes(x = industry, y = count)) +
   geom_bar(stat = "identity") +
   ggtitle("Number of Respondents by Industry") 
 # Count the number of respondents by region
