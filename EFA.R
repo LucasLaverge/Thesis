@@ -9,29 +9,25 @@ vars <- df[, paste0("E.", 1:27)]
 
 
 # Do KMO and Barlett's test
-  # Barlett's test
-  bartlett <- bartlett.test(vars)
-  print(bartlett$p.value)
-  
-  # KMO test
-  kmo <- KMO(vars)
-  print(kmo$MSA)
-  print(kmo)
+  bart_spher(vars) ###### produces Bartletts test of spherecity (you want this to be significant)
+  KMO(vars)       ###### Kaiser-Meyer-Olkin measure, you want to be above .7
 
   
 # EFA
   # Scree plot
-  fa.parallel(vars, fm = "ml", fa = "fa")
+  fa.parallel(vars, fm = "ml", fa = "pc")
   # EFA
-  efa <- fa(vars, nfactors = 7, rotate = "varimax")
-  ?fa
+  pca <- principal(vars, nfactors = 7, rotate = "varimax")
+?principal
   # Print total variance explained
-  efa$Vaccounted
+  pca$Vaccounted
 
 # Print rotated component matrix
-    print(efa$loadings,cutoff = 0.4) 
+  print(pca$loadings,cutoff = 0.4) 
+  # Print the compone
 
 
+  
 # Deleting case with cross-loadings
 
 
