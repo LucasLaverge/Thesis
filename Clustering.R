@@ -7,6 +7,8 @@ library(broom)
 library(psych)
 library(GPArotation)
 library(stargazer)
+library(Hmisc)
+
 
 # Categorization -----------------------------------------------------------------
 # Create the plot
@@ -291,10 +293,6 @@ product.scores.groups <- data.frame(
 
 # Tukey HSD
   tukey <- TukeyHSD(model)
-# Create a stargazer table for the Tukey HSD test
-  stargazer(tukey, title = "Tukey HSD Test", type = "text")
-  
-  
   remove(model, product.scores.groups, tukey)
   
   
