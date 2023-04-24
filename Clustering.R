@@ -91,25 +91,25 @@ df <- df %>% mutate(cluster = kmeans.result$cluster)
   
   # Plot per group the agile practice scores
   plot(leaders.df$agile.score, leaders.df$product.score)
-  hist(leaders.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
+  hist(leaders.df$agile.score.abs, breaks = 10, xlab = "Agile Culture Score", 
        ylab = "Frequency", 
-       main = "Histogram of Product Culture Scores",
+       main = "Histogram of Product Culture Scores, Leaders",
        col = cluster.colors[1])
   
   plot(innovators.df$agile.score, innovators.df$product.score)
-  hist(innovators.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
+  hist(innovators.df$agile.score.abs, breaks = 10, xlab = "Agile Culture Score", 
        ylab = "Frequency", 
        main = "Histogram of Product Culture Scores",
        col = cluster.colors[3])
   
   plot(executors.df$agile.score, executors.df$product.score)
-  hist(executors.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
+  hist(executors.df$agile.score.abs, breaks = 10, xlab = "Agile Culture Score", 
        ylab = "Frequency", 
        main = "Histogram of Product Culture Scores",
        col = cluster.colors[2])
   
   plot(laggers.df$agile.score, laggers.df$product.score)
-  hist(laggers.df$agile.score.abs, breaks = 10, xlab = "Product Culture Score", 
+  hist(laggers.df$agile.score.abs, breaks = 10, xlab = "Agile Culture Score", 
        ylab = "Frequency", 
        main = "Histogram of Product Culture Scores",
        col = cluster.colors[4])
