@@ -306,11 +306,8 @@ product.scores.groups <- data.frame(
   freq.it <- table(df.it$cluster)
   freq.it.no <- table(df.it.no$cluster)
 # Create the pie chart
-  par(mfrow=c(1,2)) # Set the plotting area to have 1 row and 2 columns
   pie(freq.it, labels = cluster.names, col = cluster.colors, main = "IT")
   pie(freq.it.no, labels = cluster.names, col = cluster.colors, main = "NON IT")
-  dev.off()
-  
   remove(df.it, df.it.no, freq.it, freq.it.no)
   
   
@@ -335,7 +332,7 @@ product.scores.groups <- data.frame(
   
   par(mfrow=c(2,2))
   pie(freq.A, labels = cluster.names, col = cluster.colors, main = "Antwerp")
-  pie(freq.B.FB, labels = cluster.names, col = cluster.colors, main = "Brussels and Flemish-Brabant")
+  pie(freq.B, labels = cluster.names, col = cluster.colors, main = "Brussels ")
   pie(freq.EF, labels = cluster.names, col = cluster.colors, main = "East-Flanders")
   pie(freq.WF, labels = cluster.names, col = cluster.colors, main = "West-Flanders")
   dev.off()
@@ -346,7 +343,7 @@ product.scores.groups <- data.frame(
           xlab = "Region",
           ylab = "Number of instance",
           col = cluster.colors,
-          names.arg= c("Antwerp", " East-Flanders", "West-Flanders" ),
+          names.arg= c("Antwerp", " East-Flanders", "West-Flanders"),
           legend.text = c("Leaders", "Executors", "Innovators", "Laggers"),
           args.legend = list(x = "topleft",cex = 1,
                              fill = cluster.colors))
@@ -354,3 +351,16 @@ product.scores.groups <- data.frame(
   
   remove(freq.A, freq.B, freq.EF, freq.FB, freq.WF, df.A, df.B, df.EF, df.FB, df.WF)
 
+  ####################### SIZE PIE CHARTS ######################
+# Small medium and big --> odd them together
+  df.small <- df %>% 
+    filter(df$it == "Yes")
+  df. <- df %>% 
+    filter(df$it == "No")
+  # Create freq table
+  freq.it <- table(df.it$cluster)
+  freq.it.no <- table(df.it.no$cluster)
+  # Create the pie chart
+  pie(freq.it, labels = cluster.names, col = cluster.colors, main = "IT")
+  pie(freq.it.no, labels = cluster.names, col = cluster.colors, main = "NON IT")
+  remove(df.it, df.it.no, freq.it, freq.it.no)
