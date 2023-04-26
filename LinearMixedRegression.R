@@ -2,10 +2,25 @@
 library(nlme)
 library(lme4)
 
+# Create a function to map each size to a category
+map_size_to_category <- function(size) {
+  if (size %in% c("1 - 10", "11 - 50", "51-200")) {
+    return("Small")
+  } else if (size %in% c( "201 - 500", "501 - 1 000", "1 001 - 5 000")) {
+    return("Medium")
+  } else {
+    return("Big")
+  }
+}
+
+df$size.cat <- sapply(df$size, map_size_to_category)
+
 ############################# NORMAL LINEAR REGRESSION ############################################
 # First we look at the  normal linear regression between product score and agile practices score
-model.1 <- lm(agile.score.abs ~ product.score, data = leaders.df)
+model.1 <- lm(agile.score.abs ~ product.score, data = df)
 summary(model.1) # Summary
+stargazer(model.1)
+AIC(model.1)
 cor(df$product.score, df$agile.score) # Correlation
 
 # Scatter plot of product culture scores and agile practices scores
@@ -47,35 +62,45 @@ df$EF.6 <- rowSums(df[, c("E.19", "E.20", "E.18", "E.27")]) / 4
 model1.1 <- lm(agile.score.abs ~ IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
                  EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6, data = df)
 AIC(model1.1)
+BIC(model1.1)
 summary(model1.1)
+stargazer(model1.1)
 
-## Mixed Linear Regression
+## Mixed Linear Regression wiht one fixed effect
 # Industry
 model2.1 <- lmer(agile.score.abs ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
                 EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6 + (1 | industry), data = df)
 AIC(model2.1)
+BIC(model2.1)
 summary(model2.1)
 
 #Size
 model2.2 <- lmer(agile.score.abs ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
                    EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6 + (1 | size), data = df)
 AIC(model2.2)
+BIC(model2.2)
 summary(model2.2)
 
 #IT 
-model2.3 <-  lmer(agile.score.abs ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
+model2.3 <- lmer(agile.score.abs ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
                     EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6 + (1 | it), data = df)
 AIC(model2.3)
+BIC(model2.3)
 summary(model2.3)
 
+# Region
+model2.4 <- lmer(agile.score.abs ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
+                   EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6 + (1 | region), data = df)
+AIC(model2.4)
+BIC(model2.4)
+summary(model2.4)
 
-stargazer(model.2, model.3)
+stargazer(model2.1, model2.2, model2.3, model2.4)
+# Compare the models using likelihood ratio test
+anova(model2.1, model2.2, model2.3, model2.4)
 
 
-
-
-
-
+## Mixed Linear Regression wiht multiple fixed effects
 
 
 
