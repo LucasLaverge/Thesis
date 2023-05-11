@@ -5,6 +5,7 @@ setwd("~/Thesis")
 library(readr)
 library(tidyverse)
 library(lubridate)
+library(HDoutliers)
 
 #Functions
 remove_all_NA_rows <- function(df) {
@@ -210,6 +211,20 @@ replace_NA_with_avg <- function(df, target_cols, other_cols) {
   colnames(df)[18:38] <- paste0("I.", 1:21)
   colnames(df)[39:65] <- paste0("E.", 1:27)
   
+##################### Calculate scores ############################
+  # Calculate abslolute scores
+  df$innovation.score.abs = rowSums(df[, paste0("I.", 1:21)]) # innovation score calculation
+  df$execution.score.abs = rowSums(df[, paste0("E.", 1:27)]) # execution score calculation
+  df$product.score.abs = df$execution.score + df$innovation.score # product culture score (sum of innovation and execution)
+  df$agile.score.abs = rowSums(df[, paste0("AP.", 1:12)]) #agile score calculation
   
+  # Add relative scores
+  df$innovation.score <- (df$innovation.score.abs - 21)/(21*4)
+  df$execution.score <- (df$execution.score.abs - 27) / (27*4)
+  plot(df$innovation.score, df$execution.score)
+  df$product.score <- (df$innovation.score + df$execution.score) /2
+  df$agile.score <- (df$agile.score.abs - 12) /(12*6)
   
+
+
   

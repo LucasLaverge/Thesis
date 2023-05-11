@@ -1,30 +1,41 @@
 # Packages
 library(nlme)
+library(robustbase)
 library(lme4)
 
-# Create a function to map each size to a category
-map_size_to_category <- function(size) {
-  if (size %in% c("1 - 10", "11 - 50", "51-200")) {
-    return("Small")
-  } else if (size %in% c( "201 - 500", "501 - 1 000", "1 001 - 5 000")) {
-    return("Medium")
-  } else {
-    return("Big")
-  }
-}
+library(MASS)
 
-df$size.cat <- sapply(df$size, map_size_to_category)
+# Fit a robust linear regression model
+fit <- rlm(agile.score ~ product.score, data = df.outlier)
+fit.2 <- lmrob(agile.score ~ product.score, data = df.outlier)
+
+# Print the summary of the model
+summary(fit.2)
+R_squared <- summary(fit)$r.squared
 
 ############################# NORMAL LINEAR REGRESSION ############################################
 # First we look at the  normal linear regression between product score and agile practices score
-model.1 <- lm(agile.score.abs ~ product.score, data = df)
-summary(model.1) # Summary
-stargazer(model.1)
-AIC(model.1)
-cor(df$product.score, df$agile.score) # Correlation
+    model.1 <- lm(agile.score ~ product.score, data = df)
+    summary(model.1) # Summary
+    cor(df$product.score, df$agile.score) # Correlation
+
+# Second we look at normal linear regression when removing outliers (multivariate way)
+    # Identify outliers using HDoutliers
+    out.W <- HDoutliers(df[, c("agile.score", "product.score")])
+    # Visualize the outliers using plotHDoutliers
+    plotHDoutliers(df, out.W)
+    # Remove outlier rows
+    df.outlier <- df[-c(11, 14),]
+    remove(out.W)
+    # Linear regression wihtout oultiers
+    model.2 <- lm(agile.score ~ product.score, data = df.outlier)
+    summary(model.2) # Summary
+
+# Stargazer comparison of both regressiosn
+    stargazer(model.1, model.2)
 
 # Scatter plot of product culture scores and agile practices scores
-plot(df$product.score, df$agile.score.abs, col = "darkblue")
+plot(df$product.score, df$agile.score, col = "darkblue")
 # Plot the regression line
 abline(model.1, col = "darkred")
 # plot the regression formula
@@ -33,11 +44,27 @@ formula <- substitute(paste("y = ", a + b * x),
                            b = format(coef(model.1)[2], digits = 2)))
 xrange <- range(df$product.score) 
 ypos <- predict(model.1, newdata = data.frame(product.score = mean(xrange)))
-text(mean(xrange), ypos, formula, pos = 2)
+text(mean(xrange), ypos+0.03, formula, pos = 2)
 remove(xrange, formula, ypos)
 
 
-############################# MIXED LINEAR REGRESSION ############################################
+# Scatter plot of product culture scores and agile practices scores # wihtout outliers
+plot(df.outlier$product.score, df.outlier$agile.score, col = "darkblue")
+# Plot the regression line
+abline(model.2, col = "darkred")
+# plot the regression formula
+formula <- substitute(paste("y = ", a + b * x), 
+                      list(a = format(coef(model.2)[1], digits = 2), 
+                           b = format(coef(model.2)[2], digits = 2)))
+xrange <- range(df.outlier$product.score) 
+ypos <- predict(model.2, newdata = data.frame(product.score = mean(xrange)))
+text(mean(xrange), ypos+0.05, formula, pos = 2)
+remove(xrange, formula, ypos)
+
+########################### Regression with dimension scores instead of overal score ###############################
+df.backup <- df
+df <- df.backup
+df <- df.outlier
 
 ## Calculate Innovation Factor scores
 df$IF.1 <-  rowSums(df[, c("I.1", "I.2", "I.3")]) / 3
@@ -57,39 +84,43 @@ df$EF.5 <- rowSums(df[, c("E.24", "E.23", "E.25", "E.21", "E.22")]) / 5
 df$EF.6 <- rowSums(df[, c("E.19", "E.20", "E.18", "E.27")]) / 4
 
 
-
 ## Linear regression model1.1
-model1.1 <- lm(agile.score.abs ~ IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
+model.3 <- lm(agile.score ~ IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
                  EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6, data = df)
-AIC(model1.1)
-BIC(model1.1)
-summary(model1.1)
-stargazer(model1.1)
+summary(model.3)
 
+model.4 <- lm(agile.score ~   EF.1, data = df)
+summary(model.4)
+
+############################# MIXED LINEAR REGRESSION ############################################
 ## Mixed Linear Regression wiht one fixed effect
 # Industry
-model2.1 <- lmer(agile.score.abs ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
+model2.1 <- lmer(agile.score ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
                 EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6 + (1 | industry), data = df)
 AIC(model2.1)
 BIC(model2.1)
+
 summary(model2.1)
+plot(model2.1)
+
 
 #Size
-model2.2 <- lmer(agile.score.abs ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
-                   EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6 + (1 | size), data = df)
+model2.2 <- lmer(agile.score ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
+                   EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6 + (1 | size.cat), data = df)
 AIC(model2.2)
 BIC(model2.2)
 summary(model2.2)
 
+
 #IT 
-model2.3 <- lmer(agile.score.abs ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
+model2.3 <- lmer(agile.score ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
                     EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6 + (1 | it), data = df)
 AIC(model2.3)
 BIC(model2.3)
 summary(model2.3)
 
 # Region
-model2.4 <- lmer(agile.score.abs ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
+model2.4 <- lmer(agile.score ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
                    EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6 + (1 | region), data = df)
 AIC(model2.4)
 BIC(model2.4)

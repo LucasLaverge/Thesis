@@ -7,10 +7,18 @@ library(broom)
 library(psych)
 library(GPArotation)
 
-# TO DO 
-# Change to % instead of total values
+# Create a function to map each size to a category
+map_size_to_category <- function(size) {
+  if (size %in% c("1 - 10", "11 - 50", "51-200")) {
+    return("Small")
+  } else if (size %in% c( "201 - 500", "501 - 1 000", "1 001 - 5 000")) {
+    return("Medium")
+  } else {
+    return("Big")
+  }
+}
 
-
+df$size.cat <- sapply(df$size, map_size_to_category)
 # Overview of respondents -------------------------------------------------------
   # Industry
   # Region
@@ -20,13 +28,7 @@ library(GPArotation)
 
 # Summary of the dataset
 summary(df)
-# Count the number of respondents by Industry
-df %>%
-  group_by(industry) %>%
-  summarise(count = n()) %>%
-  ggplot(aes(x = industry, y = count)) +
-  geom_bar(stat = "identity") +
-  ggtitle("Number of Respondents by Industry") 
+
 # Count the number of respondents by region
 df %>%
   group_by(region) %>%
@@ -34,16 +36,6 @@ df %>%
   ggplot(aes(x = region, y = count)) +
   geom_bar(stat = "identity") +
   ggtitle("Number of Respondents by Region")
-
-
-# Count the number of respondents by profession
-df %>%
-  group_by(job.title) %>%
-  summarise(count = n())%>%
-  ggplot(aes(x = job.title, y = count)) +
-  geom_bar(stat = "identity") +
-  ggtitle("Number of Respondents by Profession")
-
 
 # Count the number of respondents by company size
 df %>%
@@ -136,19 +128,6 @@ df %>%
 
 #--------------------------------------------------------------------------------------------------------------  
 # Overview of scores -------------------------------------------------------
-  # Calculate abslolute scores
-  df$innovation.score.abs = rowSums(df[, paste0("I.", 1:21)]) # innovation score calculation
-  df$execution.score.abs = rowSums(df[, paste0("E.", 1:27)]) # execution score calculation
-  df$product.score.abs = df$execution.score + df$innovation.score # product culture score (sum of innovation and execution)
-  df$agile.score.abs = rowSums(df[, paste0("AP.", 1:12)]) #agile score calculation
-  
-  # Add relative scores
-  df$innovation.score <- df$innovation.score.abs/(21*5)
-  df$execution.score <- df$execution.score.abs / (27*5)
-  plot(df$innovation.score, df$execution.score)
-  df$product.score <- (df$innovation.score + df$execution.score) /2
-  df$agile.score <- df$agile.score.abs/(12*7)
-  
 #Product Culture Scores
   # A histogram plot of the total scores and brief analysis of results derived from plot.
   hist(df$product.score, breaks = 10, xlab = "Product Culture Score", 
@@ -187,12 +166,12 @@ df %>%
 # Scatterplot Product Culture and Agile Practices
   # Look at distribution and assess whether we have a trend/correlation
   # Creation of linear regression 
-  model1 <- lm(agile.score ~ product.score, data = df)
+  model1 <- lm(agile.score.abs ~ product.score.abs, data = df)
   summary(model1) # Summary
   cor(df$product.score, df$agile.score) # Correlation
   
   # Scatter plot of product culture scores and agile practices scores
-  plot(df$product.score, df$agile.score, col = "darkblue")
+  plot(df$product.score.abs, df$agile.score.abs, col = "darkblue")
   # Plot the regression line
   abline(model1, col = "darkred")
   # plot the regression formula
@@ -221,29 +200,29 @@ df %>%
   abline(model4, col = "darkred")
   
   
-######## Remove outliers and look again #############
-  #make two df with and without outliers?
+remove(model1, model2, model3, model4, formula, xrange)
+remove(map_size_to_category)
 
 # Anova analysis of scores -----------------------------------------------------------
   # bin the variable agile scores into 12 groups
-  df$agile.binned <- cut(df$agile.score, breaks = 12)
+ # df$agile.binned <- cut(df$agile.score, breaks = 12)
   
   # summarize data by group
-  summary.df <- df %>%
-    group_by(agile.binned) %>%
-    summarize(
-      n = n(),
-      mean_score = mean(agile.score),
-      conf_interval = confint_tidy(lm(agile.score ~ 1), .alpha = 0.05)$conf.low %>% paste0(",", confint_tidy(lm(agile.score ~ 1), .alpha = 0.05)$conf.high)
-    )
+  #summary.df <- df %>%
+  #  group_by(agile.binned) %>%
+  #  summarize(
+   #   n = n(),
+   #   mean_score = mean(agile.score),
+   #   conf_interval = confint_tidy(lm(agile.score ~ 1), .alpha = 0.05)$conf.low %>% paste0(",", confint_tidy(lm(agile.score ~ 1), .alpha = 0.05)$conf.high)
+   # )
   
   # print summary table
-  print(summary.df)
+  #print(summary.df)
   
   # Remove
   # Delete the column named "agile.binned" from the original data frame
-  df <- df[, !names(df) %in% c("agile.binned")]
-  remove(summary.df, model1, model2, model3, model4)
+ # df <- df[, !names(df) %in% c("agile.binned")]
+  #remove(summary.df, model1, model2, model3, model4)
 #-------------------------------------------------------------------------------------------------------------- 
   
   
