@@ -58,7 +58,8 @@ remove(model1, map_size_to_category, formula, xrange)
                color = "black", size = 4, shape = 21) +
     ggtitle("K-means Clustering Results") +
     labs(x = "Innovation Score", y = "Execution Score")
-  #-------------------------------------------------------- 
+
+    #-------------------------------------------------------- 
   summary(df$execution.score)
   summary(df$innovation.score)
   remove(initial.centres, new.points, dataset)
