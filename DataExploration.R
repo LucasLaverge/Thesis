@@ -11,7 +11,7 @@ library(GPArotation)
 map_size_to_category <- function(size) {
   if (size %in% c("1 - 10", "11 - 50")) {
     return("Small")
-  } else if (size %in% c( "51 - 200","201 - 500", "501 - 1 000")) {
+  } else if (size %in% c( "51 - 200","201 - 500")) {
     return("Medium")
   } else {
     return("Big")
