@@ -86,25 +86,35 @@ ranef(model.5)
 
 
 #IT 
-model2.3 <- lmer(agile.score ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
+model.6 <- lmer(agile.score ~ IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
                     EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6 + (1 | it), data = df)
-AIC(model2.3)
-BIC(model2.3)
-summary(model2.3)
+AIC(model.6)
+BIC(model.6)
+summary(model.6)
+ranef(model.6)
 
 # Region
-model2.4 <- lmer(agile.score ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
+model.7 <- lmer(agile.score ~  IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
                    EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6 + (1 | region), data = df)
-AIC(model2.4)
-BIC(model2.4)
-summary(model2.4)
+AIC(model.7)
+BIC(model.7)
+summary(model.7)
+ranef(model.7)
 
-stargazer(model2.1, model2.2, model2.3, model2.4)
+stargazer(model.4, model.5, model.6, model.7)
 # Compare the models using likelihood ratio test
-anova(model2.1, model2.2, model2.3, model2.4)
+anova(model.4, model.5, model.6, model.7)
 
 
 ## Mixed Linear Regression wiht multiple fixed effects
+
+model.8 <- lmer(agile.score ~ IF.1 + IF.2 + IF.3 + IF.4 + IF.5 + IF.6 + IF.7 + 
+                  EF.1 + EF.2 + EF.3 + EF.4 + EF.5 + EF.6 + (1 | size/it), data = df)
+AIC(model.8)
+BIC(model.8)
+summary(model.8)
+stargazer(model.8)
+ranef(model.8)
 
 
 
