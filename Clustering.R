@@ -47,12 +47,14 @@ remove(model1, map_size_to_category, formula, xrange)
     geom_point(data = new.points, aes(x = innovation.score, y = execution.score), color = "black", size = 4, shape= 21) +
     ggtitle("K-means Initial Cluster Centers")
   
-  
+  cluster.names.plot <- c("Leaders", "Innovators", "Executors", "Laggers")
+  cluster.colors.plot <- c("salmon","thistle", "#008080", "lightblue")
+
   # Plot final state
   # Create a scatter plot of the clustering results
   ggplot(df, aes(x = innovation.score, y = execution.score, color = factor(kmeans.result$cluster))) +
     geom_point(size = 3) +
-    scale_color_manual(name = "Cluster", labels = cluster.names, values = cluster.colors) +
+    scale_color_manual(name = "Cluster", labels = cluster.names.plot, values = cluster.colors.plot) +
     geom_point(data = as.data.frame(kmeans.result$centers),
                aes(x = innovation.score, y = execution.score),
                color = "black", size = 4, shape = 21) +
